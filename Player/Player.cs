@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     private Camera PlayerCamera { get => controller.playerCamera; }
     private bool isInteracting;
     private LayerMask notInteractable;
-    private CollectibleObject currentObject;
+    public CollectibleObject currentObject;
     private void Start()
     {
         controller = GetComponent<FirstPersonController>();
