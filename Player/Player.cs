@@ -12,8 +12,8 @@ public class Player : MonoBehaviour
     private bool isInteracting;
     private IInteractable currentInteraction;
     private LayerMask notInteractable;
-    public InteractableObject currentObject;
-    private void Start()
+    public InteractableObject currentObject { get; private set; }
+    private void Awake()
     {
         controller = GetComponent<FirstPersonController>();
         notInteractable = LayerMask.GetMask("Player", "Ground");
@@ -53,7 +53,7 @@ public class Player : MonoBehaviour
             if (isInteracting)
             {
                 canvasManager.CloseInteractionText();
-                if (currentInteraction != null) currentInteraction.OnStopInteract();
+                currentInteraction?.OnStopInteract();
                 isInteracting = false;
             }
         }
@@ -71,5 +71,15 @@ public class Player : MonoBehaviour
             currentObject.rb.isKinematic = false;
             currentObject = null;
         }
+    }
+    public InteractableObject TakeObject()
+    {
+        InteractableObject obj = currentObject;
+        currentObject = null;
+        return obj;
+    }
+    public void GiveObject(InteractableObject obj)
+    {
+        currentObject = obj;
     }
 }

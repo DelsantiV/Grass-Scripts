@@ -33,7 +33,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     {
         if (player.currentObject == null)
         {
-            player.currentObject = this;
+            player.GiveObject(this);
             transform.parent = player.RightHand;
             transform.SetLocalPositionAndRotation(objectSO.inHandPosition, Quaternion.Euler(objectSO.inHandRotation));
             rb.isKinematic = true;
