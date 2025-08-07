@@ -40,7 +40,7 @@ public class BaseNPC : MonoBehaviour, IInteractable
     {
         outline = gameObject.GetOrAddComponent<Outline>();
         outline.OutlineMode = Outline.Mode.OutlineAndSilhouette;
-        outline.enabled = false;
+        outline.OutlineColor = Color.whiteSmoke;
     }
     protected virtual void Update()
     {
