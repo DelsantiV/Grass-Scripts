@@ -7,10 +7,11 @@ public class BaseNPC : MonoBehaviour, IInteractable
     [SerializeField] protected NPCSO NPCSO;
     [SerializeField] private Rig rig;
     [SerializeField] private Transform headLookAtTransform;
+    [SerializeField] private CanvasManager canvasManager;
     public float speed;
     protected Animator animator;
     public string ObjectName => NPCSO.NPCname;
-    private bool isNewToPlayer;
+    private bool isNewToPlayer = true;
 
 
     private bool isLookAtPosition;
@@ -25,13 +26,12 @@ public class BaseNPC : MonoBehaviour, IInteractable
         isLookAtPosition = true;
         headLookAtTransform.position = new Vector3(player.transform.position.x, headLookAtTransform.position.y, player.transform.position.z);
 
-        Debug.Log("Coucou");
-
     }
 
     public virtual void OnStopInteract()
     {
         isLookAtPosition = false;
+        CloseDialogBox();
 
 
     }
@@ -65,11 +65,12 @@ public class BaseNPC : MonoBehaviour, IInteractable
         if (isNewToPlayer)
         {
             isNewToPlayer = false;
-            OpenDialogBox(NPCSO.NPCIntroDialog);
+            canvasManager.SetDialogText(NPCSO.NPCIntroDialog);
         }
     }
-    protected virtual void OpenDialogBox(string text)
-    {
 
+    protected virtual void CloseDialogBox()
+    {
+        canvasManager.CloseDialogText();
     }
 }
