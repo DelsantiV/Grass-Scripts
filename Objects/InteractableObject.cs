@@ -16,7 +16,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         if (objectSO.keyObject != null)
         {
             if (player.currentObject == null) return;
-            if (player.currentObject.objectSO != objectSO) return;
+            if (player.currentObject.objectSO != objectSO.keyObject) return;
         }
         Interact(player);
     }
@@ -33,6 +33,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     {
         if (player.currentObject == null)
         {
+            player.currentObject = this;
             transform.parent = player.RightHand;
             transform.SetLocalPositionAndRotation(objectSO.inHandPosition, Quaternion.Euler(objectSO.inHandRotation));
             Destroy(rb);
