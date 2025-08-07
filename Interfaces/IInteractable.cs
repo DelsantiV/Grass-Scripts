@@ -6,5 +6,6 @@ public interface IInteractable
     public bool ShouldDisplayNameOnMouseOver { get; }
 
     public void OnInteract(Player player);
+    public void OnStopInteract();
 }
 

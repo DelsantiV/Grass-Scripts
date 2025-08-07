@@ -6,11 +6,13 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private CanvasManager canvasManager;
     [SerializeField] private Transform rightHand;
+    public Transform RightHand { get { return rightHand; } }
     public FirstPersonController controller;
     private Camera PlayerCamera { get => controller.playerCamera; }
     private bool isInteracting;
+    private IInteractable currentInteraction;
     private LayerMask notInteractable;
-    public CollectibleObject currentObject;
+    public InteractableObject currentObject;
     private void Start()
     {
         controller = GetComponent<FirstPersonController>();
@@ -29,7 +31,7 @@ public class Player : MonoBehaviour
         {
             var selectionTransform = hit.transform;
 
-            if (selectionTransform.TryGetComponent<IInteractable>(out IInteractable currentInteraction))
+            if (selectionTransform.TryGetComponent<IInteractable>(out currentInteraction))
             {
                 if (currentInteraction.ShouldDisplayNameOnMouseOver) canvasManager.SetInteractionText(currentInteraction.ObjectName);
                 isInteracting = true;
@@ -45,6 +47,7 @@ public class Player : MonoBehaviour
             if (isInteracting)
             {
                 canvasManager.CloseInteractionText();
+                currentInteraction.OnStopInteract();
                 isInteracting = false;
             }
         }
@@ -60,14 +63,6 @@ public class Player : MonoBehaviour
             currentObject.transform.parent = null;
             currentObject.AddComponent<Rigidbody>();
             currentObject = null;
-        }
-    }
-    public void CollectObject(CollectibleObject obj)
-    {
-        if (currentObject == null) 
-        { 
-            obj.SetToHand(rightHand); 
-            currentObject = obj;
         }
     }
 }
