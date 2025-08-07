@@ -32,7 +32,6 @@ public class BaseNPC : MonoBehaviour, IInteractable
     public virtual void OnStopInteract()
     {
         isLookAtPosition = false;
-        CloseDialogBox();
 
 
     }
@@ -85,5 +84,7 @@ public class BaseNPC : MonoBehaviour, IInteractable
     public void OnStopLookAt()
     {
         outline.enabled = false;
+
+        CloseDialogBox();
     }
 }
