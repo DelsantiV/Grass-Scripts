@@ -17,6 +17,7 @@ public class DoorLock : InteractableObject
         base.Interact(player);
         InteractableObject key = player.currentObject;
         key.transform.parent = transform;
+        key.transform.localScale = Vector3.one;
         key.transform.SetLocalPositionAndRotation(keyPosition, Quaternion.Euler(keyRotation));
         door.Open();
     }
