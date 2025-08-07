@@ -9,13 +9,15 @@ public class DoorLock : InteractableObject
 
     protected override void Awake()
     {
+
+        base.Awake();
         if (door == null) door = GetComponentInParent<Door>();
         
     }
     protected override void Interact(Player player)
     {
         base.Interact(player);
-        InteractableObject key = player.currentObject;
+        InteractableObject key = player.TakeObject();
         key.transform.parent = transform;
         key.transform.localScale = Vector3.one;
         key.transform.SetLocalPositionAndRotation(keyPosition, Quaternion.Euler(keyRotation));
