@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
 
     private void HandleInteractions()
     {
-        if (Physics.Raycast(PlayerCamera.transform.position, PlayerCamera.transform.forward, out RaycastHit hit, 10, ~notInteractable))
+        if (Physics.Raycast(PlayerCamera.transform.position, PlayerCamera.transform.forward, out RaycastHit hit, 4, ~notInteractable))
         {
             var selectionTransform = hit.transform;
 
