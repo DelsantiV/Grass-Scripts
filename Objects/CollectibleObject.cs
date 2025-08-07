@@ -1,20 +1,23 @@
 using UnityEngine;
 
-public class CollectibleObject : MonoBehaviour, IInteractable
+public class CollectibleObject : InteractableObject
 {
-    [SerializeField] private ObjectSO objectSO;
-    public virtual string ObjectName { get => objectSO.objectName; }
+    public override bool ShouldDisplayNameOnMouseOver { get => objectSO.showNameOnMouseOver; }
+    protected Rigidbody rb;
 
-    public bool ShouldDisplayNameOnMouseOver { get => objectSO.showNameOnMouseOver; }
+    protected virtual void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
 
-    public virtual void OnInteract(Player player)
+    public override void OnInteract(Player player)
     {
         player.CollectObject(this);
     }
     public virtual void SetToHand(Transform hand)
     {
         transform.parent = hand;
-        transform.position = objectSO.inHandPosition;
-        transform.rotation = Quaternion.Euler(objectSO.inHandRotation);
+        transform.SetLocalPositionAndRotation(objectSO.inHandPosition, Quaternion.Euler(objectSO.inHandRotation));
+        Destroy(rb);
     }
 }

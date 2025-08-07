@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -7,22 +9,23 @@ public class Player : MonoBehaviour
     public FirstPersonController controller;
     private Camera PlayerCamera { get => controller.playerCamera; }
     private bool isInteracting;
-    private LayerMask playerLayer;
+    private LayerMask notInteractable;
     private CollectibleObject currentObject;
     private void Start()
     {
         controller = GetComponent<FirstPersonController>();
-        playerLayer = LayerMask.GetMask("Player");
+        notInteractable = LayerMask.GetMask("Player", "Ground");
     }
 
     private void Update()
     {
         HandleInteractions();
+        HandleInputs();
     }
 
     private void HandleInteractions()
     {
-        if (Physics.Raycast(PlayerCamera.transform.position, PlayerCamera.transform.forward, out RaycastHit hit, 10, ~playerLayer))
+        if (Physics.Raycast(PlayerCamera.transform.position, PlayerCamera.transform.forward, out RaycastHit hit, 10, ~notInteractable))
         {
             var selectionTransform = hit.transform;
 
@@ -46,8 +49,25 @@ public class Player : MonoBehaviour
             }
         }
     }
+    private void HandleInputs()
+    {
+        if (Input.GetKeyDown(KeyCode.P)) DropCurrentObject();
+    }
+    private void DropCurrentObject()
+    {
+        if (currentObject != null)
+        {
+            currentObject.transform.parent = null;
+            currentObject.AddComponent<Rigidbody>();
+            currentObject = null;
+        }
+    }
     public void CollectObject(CollectibleObject obj)
     {
-        obj.SetToHand(rightHand);
+        if (currentObject == null) 
+        { 
+            obj.SetToHand(rightHand); 
+            currentObject = obj;
+        }
     }
 }
