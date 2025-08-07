@@ -47,7 +47,7 @@ public class Player : MonoBehaviour
             if (isInteracting)
             {
                 canvasManager.CloseInteractionText();
-                currentInteraction.OnStopInteract();
+                if (currentInteraction != null) currentInteraction.OnStopInteract();
                 isInteracting = false;
             }
         }

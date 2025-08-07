@@ -28,6 +28,12 @@ public class BaseNPC : MonoBehaviour, IInteractable
         Debug.Log("Coucou");
 
     }
+
+    public virtual void OnStopInteract()
+    {
+        rig.weight = 0;
+
+    }
     protected virtual void Awake()
     {
 
