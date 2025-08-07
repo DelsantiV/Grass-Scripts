@@ -11,6 +11,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     {
         if (objectSO.isCollectible) rb = gameObject.GetOrAddComponent<Rigidbody>();
         outline = gameObject.GetOrAddComponent<Outline>();
+        outline.enabled = false;
     }
 
     public virtual void OnInteract(Player player)
