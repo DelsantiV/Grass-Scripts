@@ -31,7 +31,8 @@ public class BaseNPC : MonoBehaviour, IInteractable
 
     public virtual void OnStopInteract()
     {
-        rig.weight = 0;
+        isLookAtPosition = false;
+
 
     }
     protected virtual void Awake()
