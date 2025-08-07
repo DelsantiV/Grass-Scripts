@@ -1,14 +1,14 @@
-using Grass;
-using UnityEditor.ShaderGraph;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private CanvasManager canvasManager;
+    [SerializeField] private Transform rightHand;
     public FirstPersonController controller;
     private Camera PlayerCamera { get => controller.playerCamera; }
     private bool isInteracting;
     private LayerMask playerLayer;
+    private CollectibleObject currentObject;
     private void Start()
     {
         controller = GetComponent<FirstPersonController>();
@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-
+        HandleInteractions();
     }
 
     private void HandleInteractions()
@@ -45,5 +45,9 @@ public class Player : MonoBehaviour
                 isInteracting = false;
             }
         }
+    }
+    public void CollectObject(CollectibleObject obj)
+    {
+        obj.SetToHand(rightHand);
     }
 }

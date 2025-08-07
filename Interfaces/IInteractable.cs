@@ -1,12 +1,10 @@
 using UnityEngine;
-namespace Grass
+public interface IInteractable
 {
-    public interface IInteractable
-    {
-        public string ObjectName {get;}
+    public string ObjectName {get;}
 
-        public bool ShouldDisplayNameOnMouseOver { get; }
+    public bool ShouldDisplayNameOnMouseOver { get; }
 
-        public void OnInteract(Player player);
-    }
+    public void OnInteract(Player player);
 }
+
