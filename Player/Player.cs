@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     public Transform RightHand { get { return rightHand; } }
     public FirstPersonController controller;
     private Camera PlayerCamera { get => controller.playerCamera; }
+    private bool isLooking;
     private bool isInteracting;
     private IInteractable currentInteraction;
     private LayerMask notInteractable;
@@ -17,6 +18,7 @@ public class Player : MonoBehaviour
     {
         controller = GetComponent<FirstPersonController>();
         notInteractable = LayerMask.GetMask("Player", "Ground");
+        int layer = LayerMask.NameToLayer("Default");
     }
 
     private void Update()
@@ -33,35 +35,51 @@ public class Player : MonoBehaviour
 
             if (selectionTransform.TryGetComponent<IInteractable>(out IInteractable newInteraction))
             {
-                isInteracting = true;
-                if (currentInteraction == null) currentInteraction = newInteraction;
-                else if (newInteraction != currentInteraction)
+                isLooking = true;
+                if (newInteraction == currentInteraction) return;
+                // new interaction is different from current
+                if (currentInteraction != null)
                 {
-                    currentInteraction.OnStopInteract();
-                    currentInteraction = newInteraction;
+                    currentInteraction.OnStopLookAt();
+                    if (isInteracting) currentInteraction.OnStopInteract();
                 }
+                currentInteraction = newInteraction;
+                currentInteraction.OnLookAt(this);
                 if (currentInteraction.ShouldDisplayNameOnMouseOver) canvasManager.SetInteractionText(currentInteraction.ObjectName);
-
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    currentInteraction.OnInteract(this);
-                }
             }
         }
         else
         {
-            if (isInteracting)
+            if (isLooking)
             {
+                if (isInteracting)
+                {
+                    canvasManager.CloseInteractionText();
+                    currentInteraction?.OnStopInteract();
+                    isInteracting = false;
+                }
                 canvasManager.CloseInteractionText();
-                currentInteraction?.OnStopInteract();
-                isInteracting = false;
+                isLooking = false;
+                currentInteraction.OnStopLookAt();
+                currentInteraction = null;
             }
         }
     }
     private void HandleInputs()
     {
         if (Input.GetKeyDown(KeyCode.P)) DropCurrentObject();
-        if (currentObject != null && Input.GetMouseButtonDown(0)) currentObject.OnObjectUsed(); 
+        if (currentObject != null && Input.GetMouseButtonDown(0)) currentObject.OnObjectUsed();
+        if (Input.GetKeyDown(KeyCode.E) && isLooking)
+        {
+            isInteracting = true;
+            currentInteraction.OnInteract(this);
+        }
+        if (Input.GetKeyUp(KeyCode.E) && isInteracting)
+        {
+            isInteracting = false;
+            currentInteraction.OnStopInteract();
+            currentInteraction = null;
+        }
     }
     private void DropCurrentObject()
     {
@@ -69,17 +87,20 @@ public class Player : MonoBehaviour
         {
             currentObject.transform.parent = null;
             currentObject.rb.isKinematic = false;
+            currentObject.gameObject.SetLayerAllChildren(LayerMask.NameToLayer("Default"));
             currentObject = null;
         }
     }
     public InteractableObject TakeObject()
     {
         InteractableObject obj = currentObject;
+        currentObject.gameObject.SetLayerAllChildren(LayerMask.NameToLayer("Default"));
         currentObject = null;
         return obj;
     }
     public void GiveObject(InteractableObject obj)
     {
         currentObject = obj;
+        currentObject.gameObject.SetLayerAllChildren(gameObject.layer);
     }
 }
