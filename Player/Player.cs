@@ -31,10 +31,16 @@ public class Player : MonoBehaviour
         {
             var selectionTransform = hit.transform;
 
-            if (selectionTransform.TryGetComponent<IInteractable>(out currentInteraction))
+            if (selectionTransform.TryGetComponent<IInteractable>(out IInteractable newInteraction))
             {
-                if (currentInteraction.ShouldDisplayNameOnMouseOver) canvasManager.SetInteractionText(currentInteraction.ObjectName);
                 isInteracting = true;
+                if (currentInteraction == null) currentInteraction = newInteraction;
+                else if (newInteraction != currentInteraction)
+                {
+                    currentInteraction.OnStopInteract();
+                    currentInteraction = newInteraction;
+                }
+                if (currentInteraction.ShouldDisplayNameOnMouseOver) canvasManager.SetInteractionText(currentInteraction.ObjectName);
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
@@ -55,13 +61,14 @@ public class Player : MonoBehaviour
     private void HandleInputs()
     {
         if (Input.GetKeyDown(KeyCode.P)) DropCurrentObject();
+        if (currentObject != null && Input.GetMouseButtonDown(0)) currentObject.OnObjectUsed(); 
     }
     private void DropCurrentObject()
     {
         if (currentObject != null)
         {
             currentObject.transform.parent = null;
-            currentObject.AddComponent<Rigidbody>();
+            currentObject.rb.isKinematic = false;
             currentObject = null;
         }
     }

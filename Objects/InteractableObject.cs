@@ -4,7 +4,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
 {
     [SerializeField] protected ObjectSO objectSO;
     public virtual string ObjectName => objectSO.objectName;
-    private Rigidbody rb;
+    public Rigidbody rb { get; private set; }
     public virtual bool ShouldDisplayNameOnMouseOver => objectSO.showNameOnMouseOver;
     protected virtual void Awake()
     {
@@ -13,10 +13,10 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     public virtual void OnInteract(Player player)
     {
-        if (objectSO.keyObject != null)
+        if (objectSO.neededKeyID != 0)
         {
             if (player.currentObject == null) return;
-            if (player.currentObject.objectSO != objectSO.keyObject) return;
+            if (player.currentObject.objectSO.keyID != objectSO.neededKeyID) return;
         }
         Interact(player);
     }
@@ -36,7 +36,8 @@ public class InteractableObject : MonoBehaviour, IInteractable
             player.currentObject = this;
             transform.parent = player.RightHand;
             transform.SetLocalPositionAndRotation(objectSO.inHandPosition, Quaternion.Euler(objectSO.inHandRotation));
-            Destroy(rb);
+            rb.isKinematic = true;
         }
     }
+    public virtual void OnObjectUsed() { }
 }

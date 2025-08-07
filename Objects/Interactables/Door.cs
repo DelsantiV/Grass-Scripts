@@ -9,7 +9,7 @@ public class Door : InteractableObject
         base.Awake(); 
         animator = GetComponent<Animator>();
     }
-    protected override void Interact(Player player)
+    public void Open()
     {
         isOpen = true;
         animator.SetBool("isOpen", isOpen);
