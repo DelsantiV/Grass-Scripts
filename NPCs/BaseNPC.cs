@@ -10,6 +10,7 @@ public class BaseNPC : MonoBehaviour, IInteractable
     [SerializeField] private CanvasManager canvasManager;
     public float speed;
     protected Animator animator;
+    private Outline outline;
     public string ObjectName => NPCSO.NPCname;
     private bool isNewToPlayer = true;
 
@@ -37,7 +38,8 @@ public class BaseNPC : MonoBehaviour, IInteractable
     }
     protected virtual void Awake()
     {
-
+        outline = gameObject.GetOrAddComponent<Outline>();
+        outline.OutlineMode = Outline.Mode.OutlineAndSilhouette;
     }
     protected virtual void Update()
     {
@@ -72,5 +74,15 @@ public class BaseNPC : MonoBehaviour, IInteractable
     protected virtual void CloseDialogBox()
     {
         canvasManager.CloseDialogText();
+    }
+
+    public void OnLookAt(Player player)
+    {
+        outline.enabled = true;
+    }
+
+    public void OnStopLookAt()
+    {
+        outline.enabled = false;
     }
 }

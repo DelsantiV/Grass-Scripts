@@ -5,10 +5,12 @@ public class InteractableObject : MonoBehaviour, IInteractable
     [SerializeField] protected ObjectSO objectSO;
     public virtual string ObjectName => objectSO.objectName;
     public Rigidbody rb { get; private set; }
+    private Outline outline;
     public virtual bool ShouldDisplayNameOnMouseOver => objectSO.showNameOnMouseOver;
     protected virtual void Awake()
     {
         if (objectSO.isCollectible) rb = gameObject.GetOrAddComponent<Rigidbody>();
+        outline = gameObject.GetOrAddComponent<Outline>();
     }
 
     public virtual void OnInteract(Player player)
@@ -40,4 +42,14 @@ public class InteractableObject : MonoBehaviour, IInteractable
         }
     }
     public virtual void OnObjectUsed() { }
+
+    public void OnLookAt(Player player)
+    {
+        outline.enabled = true;
+    }
+
+    public void OnStopLookAt()
+    {
+        outline.enabled = false;
+    }
 }
