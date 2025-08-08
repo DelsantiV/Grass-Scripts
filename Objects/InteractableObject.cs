@@ -54,7 +54,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     }
     public void SetUnInteractable()
     {
-        Destroy(outline);
+        outline.enabled = false;
         Destroy(this);
     }
 }
