@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class DoorLock : InteractableObject
 {
-    [SerializeField] private Door door;
+    [SerializeField] private Openable door;
     [SerializeField] Vector3 keyPosition;
     [SerializeField] Vector3 keyRotation;
 
@@ -10,13 +10,15 @@ public class DoorLock : InteractableObject
     {
 
         base.Awake();
-        if (door == null) door = GetComponentInParent<Door>();
+        if (door == null) door = GetComponentInParent<Openable>();
+        door.isLocked = true;
         
     }
     protected override void Interact(Player player)
     {
         base.Interact(player);
         PutKeyInLock(player.TakeObject());
+        door.isLocked = false;
         door.Open();
         SetUnInteractable();
     }
