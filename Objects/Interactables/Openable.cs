@@ -16,23 +16,30 @@ public class Openable : InteractableObject
     {
         if (isLocked) outline.OutlineColor = Color.mediumVioletRed;
     }
+    public void Unlock()
+    {
+        isLocked = false;
+        Open();
+        outline.OutlineColor = Color.aliceBlue;
+        if (uninteractableAfterOpen) SetUnInteractable();
+    }
 
     protected override void Interact(Player player)
     {
         if (isLocked) return;
         base.Interact(player);
+        Debug.Log(transform.rotation.eulerAngles.y);
         isOpen = !isOpen;
-        animator.SetBool("isOpen", isOpen);
+        animator.SetTrigger(isOpen ? "Open" : "Close") ;
     }
     public void Open()
     {
         isOpen = true;
-        animator.SetBool("isOpen", isOpen);
-        if (uninteractableAfterOpen) SetUnInteractable();        
+        animator.SetTrigger("Open");   
     }
     protected void Close()
     {
         isOpen = false;
-        animator.SetBool("isOpen", isOpen );
+        animator.SetTrigger("Close");
     }
 }
