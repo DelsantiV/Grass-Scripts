@@ -31,7 +31,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
             return;
         }
     }
-    public virtual void OnStopInteract() { }
+    public virtual void OnStopInteract(Player player) { }
     protected virtual void TryCollectObject(Player player)
     {
         if (player.currentObject == null)
@@ -49,7 +49,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         if (outlineOnLookAt) outline.enabled = true;
     }
 
-    public void OnStopLookAt()
+    public void OnStopLookAt(Player player)
     {
         outline.enabled = false;
     }

@@ -37,8 +37,8 @@ public class Player : MonoBehaviour
                 // new interaction is different from current
                 if (currentInteraction != null)
                 {
-                    currentInteraction.OnStopLookAt();
-                    if (isInteracting) currentInteraction.OnStopInteract();
+                    currentInteraction.OnStopLookAt(this);
+                    if (isInteracting) currentInteraction.OnStopInteract(this);
                 }
                 currentInteraction = newInteraction;
                 currentInteraction.OnLookAt(this);
@@ -51,13 +51,13 @@ public class Player : MonoBehaviour
         {
             if (isInteracting)
             {
-                currentInteraction?.OnStopInteract();
+                currentInteraction?.OnStopInteract(this);
                 isInteracting = false;
             }
             canvasManager.CloseInteractionText();
             canvasManager.CloseInteractionText();
             isLooking = false;
-            currentInteraction?.OnStopLookAt();
+            currentInteraction?.OnStopLookAt(this);
             currentInteraction = null;
         }
         
@@ -74,7 +74,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.E) && isInteracting)
         {
             isInteracting = false;
-            currentInteraction?.OnStopInteract();
+            currentInteraction?.OnStopInteract(this);
             currentInteraction = null;
         }
     }

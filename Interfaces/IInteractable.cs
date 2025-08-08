@@ -5,7 +5,7 @@ public interface IInteractable
     public bool ShouldDisplayNameOnMouseOver { get; }
     public void OnLookAt(Player player);
     public void OnInteract(Player player);
-    public void OnStopLookAt();
-    public void OnStopInteract();
+    public void OnStopLookAt(Player player);
+    public void OnStopInteract(Player player);
 }
 
