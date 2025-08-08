@@ -7,20 +7,26 @@ public class Openable : InteractableObject
     public override bool ShouldDisplayNameOnMouseOver => isLocked;
     private Animator animator;
     private bool isOpen;
+    private ObjectContainer container;
+    private bool isContainer;
     protected override void Awake()
     {
         base.Awake(); 
         animator = GetComponent<Animator>();
+        isContainer = TryGetComponent<ObjectContainer>(out container);
         outline.OutlineMode = Outline.Mode.OutlineVisible;
     }
-    protected void Start()
+    protected override void Start()
     {
+        base.Start();
         if (isLocked) outline.OutlineColor = Color.mediumVioletRed;
+        else outline.OutlineColor = Color.aliceBlue;
     }
     public void Unlock()
     {
         isLocked = false;
         Open();
+        if (isContainer) container.Open();
         outline.OutlineColor = Color.aliceBlue;
         if (uninteractableAfterOpen) SetUnInteractable();
     }
@@ -29,7 +35,6 @@ public class Openable : InteractableObject
     {
         if (isLocked) return;
         base.Interact(player);
-        Debug.Log(transform.rotation.eulerAngles.y);
         isOpen = !isOpen;
         animator.SetTrigger(isOpen ? "Open" : "Close") ;
     }
