@@ -4,6 +4,7 @@ public class Openable : InteractableObject
 {
     public bool isLocked;
     [SerializeField] protected bool uninteractableAfterOpen = false;
+    public override bool ShouldDisplayNameOnMouseOver => isLocked;
     private Animator animator;
     private bool isOpen;
     protected override void Awake()
