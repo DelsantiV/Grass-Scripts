@@ -43,6 +43,7 @@ public class Player : MonoBehaviour
                 currentInteraction = newInteraction;
                 currentInteraction.OnLookAt(this);
                 if (currentInteraction.ShouldDisplayNameOnMouseOver) canvasManager.SetInteractionText(currentInteraction.ObjectName);
+                else canvasManager.CloseInteractionText();
                 return;
             }
         }
@@ -87,6 +88,10 @@ public class Player : MonoBehaviour
             currentObject = null;
         }
     }
+    /// <summary>
+    /// Takes the current object from the player hand
+    /// </summary>
+    /// <returns></returns>
     public InteractableObject TakeObject()
     {
         InteractableObject obj = currentObject;
@@ -100,10 +105,18 @@ public class Player : MonoBehaviour
         if (currentObject.objectSO.keyID == keyID) return true;
         return false;
     }
-
+    /// <summary>
+    /// Give the object to the player.
+    /// </summary>
+    /// <param name="obj"></param>
     public void GiveObject(InteractableObject obj)
     {
         currentObject = obj;
         currentObject.gameObject.SetLayerAllChildren(gameObject.layer);
+    }
+    public void SetCursorLockMode(bool locked)
+    {
+        Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
+        controller.cameraCanMove = !locked;
     }
 }
