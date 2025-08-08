@@ -42,6 +42,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
             player.GiveObject(this);
             transform.parent = player.RightHand;
             transform.SetLocalPositionAndRotation(objectSO.inHandPosition, Quaternion.Euler(objectSO.inHandRotation));
+            rb = gameObject.GetOrAddComponent<Rigidbody>();
             rb.isKinematic = true;
         }
     }
