@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 
 public class DoorLock : InteractableObject
 {
@@ -17,12 +16,15 @@ public class DoorLock : InteractableObject
     protected override void Interact(Player player)
     {
         base.Interact(player);
-        InteractableObject key = player.TakeObject();
+        PutKeyInLock(player.TakeObject());
+        door.Open();
+        SetUnInteractable();
+    }
+    protected virtual void PutKeyInLock(InteractableObject key)
+    {
         key.transform.parent = transform;
         key.transform.localScale = Vector3.one;
         key.transform.SetLocalPositionAndRotation(keyPosition, Quaternion.Euler(keyRotation));
         key.SetUnInteractable();
-        door.Open();
-        SetUnInteractable();
     }
 }
