@@ -18,8 +18,7 @@ public class DoorLock : InteractableObject
     {
         base.Interact(player);
         PutKeyInLock(player.TakeObject());
-        door.isLocked = false;
-        door.Open();
+        door.Unlock();
         SetUnInteractable();
     }
     protected virtual void PutKeyInLock(InteractableObject key)
