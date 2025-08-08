@@ -94,6 +94,13 @@ public class Player : MonoBehaviour
         currentObject = null;
         return obj;
     }
+    public bool IsCurrentObjectKey(int keyID)
+    {
+        if (currentObject == null) return false;
+        if (currentObject.objectSO.keyID == keyID) return true;
+        return false;
+    }
+
     public void GiveObject(InteractableObject obj)
     {
         currentObject = obj;
