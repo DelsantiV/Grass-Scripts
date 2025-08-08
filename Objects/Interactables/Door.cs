@@ -13,5 +13,6 @@ public class Door : InteractableObject
     {
         isOpen = true;
         animator.SetBool("isOpen", isOpen);
+        SetUnInteractable();        
     }
 }

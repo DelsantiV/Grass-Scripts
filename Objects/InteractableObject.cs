@@ -5,7 +5,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     [SerializeField] protected ObjectSO objectSO;
     public virtual string ObjectName => objectSO.objectName;
     public Rigidbody rb { get; private set; }
-    private Outline outline;
+    protected Outline outline;
     public virtual bool ShouldDisplayNameOnMouseOver => objectSO.showNameOnMouseOver;
     protected virtual void Awake()
     {
@@ -51,5 +51,10 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public void OnStopLookAt()
     {
         outline.enabled = false;
+    }
+    public void SetUnInteractable()
+    {
+        Destroy(outline);
+        Destroy(this);
     }
 }

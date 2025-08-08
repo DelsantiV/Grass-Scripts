@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -17,8 +15,7 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<FirstPersonController>();
-        notInteractable = LayerMask.GetMask("Player", "Ground");
-        int layer = LayerMask.NameToLayer("Default");
+        notInteractable = LayerMask.GetMask("Ground", "Player");
     }
 
     private void Update()
@@ -60,7 +57,7 @@ public class Player : MonoBehaviour
                 }
                 canvasManager.CloseInteractionText();
                 isLooking = false;
-                currentInteraction.OnStopLookAt();
+                currentInteraction?.OnStopLookAt();
                 currentInteraction = null;
             }
         }
@@ -72,12 +69,12 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E) && isLooking)
         {
             isInteracting = true;
-            currentInteraction.OnInteract(this);
+            currentInteraction?.OnInteract(this);
         }
         if (Input.GetKeyUp(KeyCode.E) && isInteracting)
         {
             isInteracting = false;
-            currentInteraction.OnStopInteract();
+            currentInteraction?.OnStopInteract();
             currentInteraction = null;
         }
     }
