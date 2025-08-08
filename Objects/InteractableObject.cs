@@ -7,13 +7,16 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public virtual string ObjectName => objectSO.objectName;
     public Rigidbody rb { get; private set; }
     protected Outline outline;
+    public bool shouldHaveRigidBody = true;
     public virtual bool ShouldDisplayNameOnMouseOver => objectSO.showNameOnMouseOver;
     protected virtual void Awake()
     {
-        if (objectSO.isCollectible) rb = gameObject.GetOrAddComponent<Rigidbody>();
         outline = gameObject.GetOrAddComponent<Outline>();
     }
-
+    protected virtual void Start()
+    {
+        if (objectSO.isCollectible && shouldHaveRigidBody) rb = gameObject.GetOrAddComponent<Rigidbody>();
+    }
     public virtual void OnInteract(Player player)
     {
         if (objectSO.neededKeyID != 0)
