@@ -43,24 +43,23 @@ public class Player : MonoBehaviour
                 currentInteraction = newInteraction;
                 currentInteraction.OnLookAt(this);
                 if (currentInteraction.ShouldDisplayNameOnMouseOver) canvasManager.SetInteractionText(currentInteraction.ObjectName);
+                return;
             }
         }
-        else
+        if (isLooking)
         {
-            if (isLooking)
+            if (isInteracting)
             {
-                if (isInteracting)
-                {
-                    canvasManager.CloseInteractionText();
-                    currentInteraction?.OnStopInteract();
-                    isInteracting = false;
-                }
-                canvasManager.CloseInteractionText();
-                isLooking = false;
-                currentInteraction?.OnStopLookAt();
-                currentInteraction = null;
+                currentInteraction?.OnStopInteract();
+                isInteracting = false;
             }
+            canvasManager.CloseInteractionText();
+            canvasManager.CloseInteractionText();
+            isLooking = false;
+            currentInteraction?.OnStopLookAt();
+            currentInteraction = null;
         }
+        
     }
     private void HandleInputs()
     {
