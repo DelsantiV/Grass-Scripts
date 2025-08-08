@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class InteractableObject : MonoBehaviour, IInteractable
 {
-    [SerializeField] protected ObjectSO objectSO;
+    public ObjectSO objectSO;
+    [SerializeField] protected bool outlineOnLookAt = true;
     public virtual string ObjectName => objectSO.objectName;
     public Rigidbody rb { get; private set; }
     protected Outline outline;
@@ -18,7 +19,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         if (objectSO.neededKeyID != 0)
         {
             if (player.currentObject == null) return;
-            if (player.currentObject.objectSO.keyID != objectSO.neededKeyID) return;
+            if (!player.IsCurrentObjectKey(objectSO.neededKeyID)) return;
         }
         Interact(player);
     }
@@ -45,7 +46,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     public void OnLookAt(Player player)
     {
-        outline.enabled = true;
+        if (outlineOnLookAt) outline.enabled = true;
     }
 
     public void OnStopLookAt()
