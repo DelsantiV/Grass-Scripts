@@ -117,6 +117,6 @@ public class Player : MonoBehaviour
     public void SetCursorLockMode(bool locked)
     {
         Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
-        controller.cameraCanMove = !locked;
+        controller.cameraCanMove = locked;
     }
 }
