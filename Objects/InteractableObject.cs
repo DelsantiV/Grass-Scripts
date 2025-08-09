@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Collider))]
 public class InteractableObject : MonoBehaviour, IInteractable
 {
     public ObjectSO objectSO;
@@ -45,7 +46,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     }
     protected virtual void Start()
     {
-        if (objectSO.isCollectible && shouldHaveRigidBody) rb = gameObject.GetOrAddComponent<Rigidbody>();
+        if (isCollectible && shouldHaveRigidBody) rb = gameObject.GetOrAddComponent<Rigidbody>();
     }
     public virtual void OnInteract(Player player)
     {
@@ -81,11 +82,13 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public void OnLookAt(Player player)
     {
         if (outlineOnLookAt) outline.enabled = true;
+        if (ShouldDisplayNameOnMouseOver) player.CanvasManager.SetInteractionText(ObjectName);
     }
 
     public void OnStopLookAt(Player player)
     {
         outline.enabled = false;
+        player.CanvasManager.CloseInteractionText();
     }
     public void SetUnInteractable()
     {
