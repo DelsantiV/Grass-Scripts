@@ -73,6 +73,7 @@ public class FirstPersonController : MonoBehaviour
     public bool enableJump = true;
     public KeyCode jumpKey = KeyCode.Space;
     public float jumpPower = 5f;
+    private LayerMask groundLayer;
 
     // Internal Variables
     private bool isGrounded = false;
@@ -115,6 +116,7 @@ public class FirstPersonController : MonoBehaviour
         playerCamera.fieldOfView = fov;
         originalScale = transform.localScale;
         jointOriginalPos = joint.localPosition;
+        groundLayer = LayerMask.GetMask("Ground", "Default");
     }
 
     void Start()
@@ -135,16 +137,7 @@ public class FirstPersonController : MonoBehaviour
         if(cameraCanMove)
         {
             yaw = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * mouseSensitivity;
-
-            if (!invertCamera)
-            {
-                pitch -= mouseSensitivity * Input.GetAxis("Mouse Y");
-            }
-            else
-            {
-                // Inverted Y
-                pitch += mouseSensitivity * Input.GetAxis("Mouse Y");
-            }
+            pitch += Input.GetAxis("Mouse Y") * (invertCamera ? 1 : -1) * mouseSensitivity;
 
             // Clamp pitch between lookAngle
             pitch = Mathf.Clamp(pitch, -maxLookAngle, maxLookAngle);
@@ -327,7 +320,7 @@ public class FirstPersonController : MonoBehaviour
         Vector3 direction = transform.TransformDirection(Vector3.down);
         float distance = .75f;
 
-        if (Physics.Raycast(origin, direction, out RaycastHit hit, distance))
+        if (Physics.Raycast(origin, direction, out RaycastHit hit, distance, groundLayer))
         {
             Debug.DrawRay(origin, direction * distance, Color.red);
             isGrounded = true;
