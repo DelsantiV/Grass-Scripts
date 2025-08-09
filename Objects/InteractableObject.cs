@@ -4,11 +4,41 @@ public class InteractableObject : MonoBehaviour, IInteractable
 {
     public ObjectSO objectSO;
     [SerializeField] protected bool outlineOnLookAt = true;
-    public virtual string ObjectName => objectSO.objectName;
+    public virtual string ObjectName
+    {
+        get
+        {
+            if (objectSO == null) return string.Empty;
+            return objectSO.objectName;
+        }
+    }
     public Rigidbody rb { get; private set; }
     protected Outline outline;
     public bool shouldHaveRigidBody = true;
-    public virtual bool ShouldDisplayNameOnMouseOver => objectSO.showNameOnMouseOver;
+    public virtual bool ShouldDisplayNameOnMouseOver
+    {
+        get
+        {
+            if (objectSO == null) return false;
+            return objectSO.showNameOnMouseOver;
+        }
+    }
+    private int neededKeyID
+    {
+        get
+        {
+            if (objectSO == null) return 0;
+            return objectSO.neededKeyID;
+        }
+    }
+    private bool isCollectible
+    {
+        get
+        {
+            if (objectSO == null) return false; 
+            return objectSO.isCollectible;
+        }
+    }
     protected virtual void Awake()
     {
         outline = gameObject.GetOrAddComponent<Outline>();
@@ -19,16 +49,16 @@ public class InteractableObject : MonoBehaviour, IInteractable
     }
     public virtual void OnInteract(Player player)
     {
-        if (objectSO.neededKeyID != 0)
+        if (neededKeyID != 0)
         {
             if (player.currentObject == null) return;
-            if (!player.IsCurrentObjectKey(objectSO.neededKeyID)) return;
+            if (!player.IsCurrentObjectKey(neededKeyID)) return;
         }
         Interact(player);
     }
     protected virtual void Interact(Player player)
     {
-        if (objectSO.isCollectible)
+        if (isCollectible)
         {
             TryCollectObject(player);
             return;
