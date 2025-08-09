@@ -9,7 +9,12 @@ public class BaseNPC : MonoBehaviour, IInteractable
     [SerializeField] private Rig rig;
     [SerializeField] private Transform headLookAtTransform;
     [SerializeField] private CanvasManager canvasManager;
-    [SerializeField] private NPCConversation Conversation;
+    [SerializeField] private NPCConversation baseConversation;
+    [SerializeField] private NPCConversation questAcceptedConversation;
+    [SerializeField] private NPCConversation questCompletedConversation;
+
+    private bool questAccepted;
+
     public float speed;
     protected Animator animator;
     private Outline outline;
@@ -38,19 +43,48 @@ public class BaseNPC : MonoBehaviour, IInteractable
 
      protected virtual void StartDialog(Player player)
     {
+
+
         player.SetCursorLockMode(false);
-        ConversationManager.Instance.StartConversation(Conversation);
+
+
+        ConversationManager.Instance.StartConversation((!questAccepted) ? baseConversation : questAcceptedConversation);
+
+
+
+        
+    }
+
+
+    public void QuestAccepted()
+    {
+
+        questAccepted = true;
 
     }
-    
+
+
+
+
     protected virtual void EndDialog(Player player)
     {
+
         player.SetCursorLockMode(true);
-        ConversationManager.Instance.EndConversation();
+
+        EndDialog();
 
     }
 
-   
+    protected virtual void EndDialog()
+    {
+
+        ConversationManager.Instance.EndConversation();
+        
+    }
+
+
+
+
 
 
     #endregion
@@ -58,6 +92,8 @@ public class BaseNPC : MonoBehaviour, IInteractable
     #region Interact
     public virtual void OnInteract(Player player)
     {
+
+        canvasManager.CloseInteractionText();
         StartDialog(player);
 
         isLookAtPosition = true;
@@ -77,6 +113,7 @@ public class BaseNPC : MonoBehaviour, IInteractable
     public void OnLookAt(Player player)
     {
         outline.enabled = true;
+        canvasManager.SetInteractionText(NPCSO.NPCname);
     }
 
     public void OnStopLookAt(Player player)
@@ -86,6 +123,8 @@ public class BaseNPC : MonoBehaviour, IInteractable
         isLookAtPosition = false;
 
         EndDialog(player);
+
+        canvasManager.CloseInteractionText();
 
     }
 
