@@ -12,10 +12,12 @@ public class Player : MonoBehaviour
     private IInteractable currentInteraction;
     private LayerMask notInteractable;
     public InteractableObject currentObject { get; private set; }
+    public CanvasManager CanvasManager { get; private set; }
     private void Awake()
     {
         controller = GetComponent<FirstPersonController>();
         notInteractable = LayerMask.GetMask("Ground", "Player");
+        CanvasManager = FindFirstObjectByType<CanvasManager>();
     }
 
     private void Update()
@@ -42,8 +44,6 @@ public class Player : MonoBehaviour
                 }
                 currentInteraction = newInteraction;
                 currentInteraction.OnLookAt(this);
-                if (currentInteraction.ShouldDisplayNameOnMouseOver) canvasManager.SetInteractionText(currentInteraction.ObjectName);
-                else canvasManager.CloseInteractionText();
                 return;
             }
         }
