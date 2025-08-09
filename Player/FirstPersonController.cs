@@ -257,17 +257,10 @@ public class FirstPersonController : MonoBehaviour
 
             // Checks if player is walking and isGrounded
             // Will allow head bob
-            if (targetVelocity.x != 0 || targetVelocity.z != 0 && isGrounded)
-            {
-                isWalking = true;
-            }
-            else
-            {
-                isWalking = false;
-            }
+            isWalking = targetVelocity.x != 0 || targetVelocity.z != 0 && isGrounded;
 
             // All movement calculations shile sprint is active
-            if (enableSprint && Input.GetKey(sprintKey))
+            if (enableSprint && Input.GetKey(sprintKey) && isGrounded)
             {
                 targetVelocity = transform.TransformDirection(targetVelocity) * sprintSpeed;
 
@@ -296,7 +289,7 @@ public class FirstPersonController : MonoBehaviour
             else
             {
                 isSprinting = false;
-
+                float actualSpeed = isGrounded ? walkSpeed : walkSpeed / 2;
                 targetVelocity = transform.TransformDirection(targetVelocity) * walkSpeed;
 
                 // Apply a force that attempts to reach our target velocity
