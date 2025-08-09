@@ -5,7 +5,7 @@ public class ObjectSO : ScriptableObject
 {
     public string objectName;
     /// <summary>
-    /// ID to open other objects
+    /// object ID
     /// </summary>
     public int keyID;
     public bool showNameOnMouseOver;
