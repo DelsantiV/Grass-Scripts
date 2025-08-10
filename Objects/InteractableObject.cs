@@ -1,10 +1,14 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Collider))]
 public class InteractableObject : MonoBehaviour, IInteractable
 {
     public ObjectSO objectSO;
     [SerializeField] protected bool outlineOnLookAt = true;
+    public UnityEvent OnCollected;
+    public UnityEvent OnDropped;
+    private new Collider collider;
     public virtual string ObjectName
     {
         get
@@ -43,6 +47,9 @@ public class InteractableObject : MonoBehaviour, IInteractable
     protected virtual void Awake()
     {
         outline = gameObject.GetOrAddComponent<Outline>();
+        OnCollected = new();
+        OnDropped = new();
+        collider = gameObject.GetComponent<Collider>();
     }
     protected virtual void Start()
     {
@@ -73,9 +80,22 @@ public class InteractableObject : MonoBehaviour, IInteractable
             player.GiveObject(this);
             transform.parent = player.RightHand;
             transform.SetLocalPositionAndRotation(objectSO.inHandPosition, Quaternion.Euler(objectSO.inHandRotation));
-            rb = gameObject.GetOrAddComponent<Rigidbody>();
-            rb.isKinematic = true;
+            if (shouldHaveRigidBody)
+            {
+                rb = gameObject.GetOrAddComponent<Rigidbody>();
+                rb.isKinematic = true;
+            }
+            collider.enabled = false;
+            OnCollected.Invoke();
         }
+    }
+    public virtual void OnObjectDropped()
+    {
+        transform.parent = null;
+        if (shouldHaveRigidBody) rb.isKinematic = false;
+        collider.enabled = true;
+        gameObject.SetLayerAllChildren(LayerMask.NameToLayer("Default"));
+        OnDropped.Invoke();
     }
     public virtual void OnObjectUsed() { }
 

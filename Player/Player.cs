@@ -82,9 +82,7 @@ public class Player : MonoBehaviour
     {
         if (currentObject != null)
         {
-            currentObject.transform.parent = null;
-            currentObject.rb.isKinematic = false;
-            currentObject.gameObject.SetLayerAllChildren(LayerMask.NameToLayer("Default"));
+            currentObject.OnObjectDropped();
             currentObject = null;
         }
     }
