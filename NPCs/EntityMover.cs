@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -16,26 +15,29 @@ public class EntityMover : MonoBehaviour
     [SerializeField] private float maxWaitTimeOnDestination;
     [SerializeField] private float destinationRange;
     [SerializeField] private Vector3 destination;
+    [SerializeField] private bool shouldFleePlayer;
+    [SerializeField] private float fleeDistance;
+    [SerializeField] private PlayerDetecter playerDetecter;
     private NavMeshAgent agent;
     private Vector3 origin;
     private bool isOnReturn;
     private float currentSpeed;
-    private bool isStopped;
+    private bool isStopped { get => agent.isStopped; set => agent.isStopped = value; }
+    private bool isPaused;
     public UnityEvent OnDestinationReached;
     private AnimatorHandler animatorHandler;
-    private void Awake()
+    protected virtual void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-        agent.speed = isRunning ? runningSpeed : walkingSpeed;
+        SetRunning(isRunning);
         animatorHandler = new(GetComponent<Animator>());
         origin = transform.position;
         OnDestinationReached = new();
-        if (destinationMode == DestinationMode.BackAndForth || destinationMode == DestinationMode.Random) OnDestinationReached.AddListener(WaitAndSetDestination);
-        if (destinationMode == DestinationMode.Destination) OnDestinationReached.AddListener(StopMovement);
+        InitializeBehaviour();
     }
-    private void Start()
+    protected virtual void Start()
     {
-        SetDestination();
+        if (shouldFleePlayer) playerDetecter.OnPlayerDetected.AddListener(OnPlayerDetected);
     }
     private void Update()
     {   if (isStopped) return;     
@@ -53,8 +55,19 @@ public class EntityMover : MonoBehaviour
             animatorHandler.SetAnimationSpeed(relativeSpeed);
         }
     }
+    public void InitializeBehaviour()
+    {
+        agent.enabled = true;
+        isStopped = false;
+        enabled = true;
+        if (shouldFleePlayer) playerDetecter.EnableDetecter(true);
+        if (destinationMode == DestinationMode.BackAndForth || destinationMode == DestinationMode.Random) OnDestinationReached.AddListener(WaitAndSetDestination);
+        if (destinationMode == DestinationMode.Destination) OnDestinationReached.AddListener(StopMovement);
+        SetDestination();
+    }
     private void SetDestination()
     {
+        if (isStopped || isPaused) return;
         switch (destinationMode)
         {
             case DestinationMode.None: return;
@@ -70,19 +83,30 @@ public class EntityMover : MonoBehaviour
                 if (RandomPoint(transform.position, destinationRange,out destination)) agent.SetDestination(destination);
                 return;
             }
-
         }
     }
     private IEnumerator WaitAndSetDestination(float seconds)
     {
-        isStopped = true;
+        isPaused = true;
         animatorHandler.SetAnimationSpeed(0f);
         yield return new WaitForSeconds(seconds);
-        isStopped = false;
-        SetDestination();
+        if (isPaused)
+        {
+            isPaused = false;
+            SetDestination();
+        }
+        
     }
     private void WaitAndSetDestination()
     {
+        if (shouldFleePlayer)
+        {
+            if (playerDetecter.isPlayerInRange)
+            {
+                FleePlayer();
+                return;
+            }
+        }
         if (maxWaitTimeOnDestination == 0f) SetDestination();
         float seconds = Random.Range(minWaitTimeOnDestination, maxWaitTimeOnDestination);
         StartCoroutine(WaitAndSetDestination(seconds));
@@ -108,10 +132,30 @@ public class EntityMover : MonoBehaviour
     }
     public void StopMovement()
     {
-        agent.isStopped = true;
-        agent.enabled = false;
+        OnDestinationReached.RemoveAllListeners();
         isStopped = true;
+        agent.enabled = false;
+        enabled = false;
+        playerDetecter.EnableDetecter(false);
         animatorHandler.SetAnimationSpeed(0f);
+    }
+    private void OnPlayerDetected()
+    {
+        isPaused = false;
+        FleePlayer();
+    }
+
+    private void FleePlayer()
+    {
+        Debug.Log("ok");
+        Vector3 fleePoint = playerDetecter.player.transform.forward.normalized * fleeDistance + transform.position;
+        Debug.Log(fleePoint);
+        if (NavMesh.SamplePosition(fleePoint, out NavMeshHit hit, 1.0f, agent.areaMask))
+        {
+            agent.SetDestination(hit.position);
+            return;
+        }
+        SetDestination();
     }
     public enum DestinationMode
     {
