@@ -21,6 +21,7 @@ public class EntityMover : MonoBehaviour
     private NavMeshAgent agent;
     private Vector3 origin;
     private bool isOnReturn;
+    private bool hasArrived;
     private float currentSpeed;
     private bool isStopped { get => agent.isStopped; set => agent.isStopped = value; }
     private bool isPaused;
@@ -40,12 +41,13 @@ public class EntityMover : MonoBehaviour
         if (shouldFleePlayer) playerDetecter.OnPlayerDetected.AddListener(OnPlayerDetected);
     }
     private void Update()
-    {   if (isStopped) return;     
+    {   if (isStopped || isPaused) return;     
         if (destinationMode != DestinationMode.None)
         {
-            if (agent.remainingDistance < 0.001f)
+            if (agent.remainingDistance < 0.001f && !hasArrived)
             {
                 OnDestinationReached.Invoke();
+                hasArrived = true;
             }
         }
         if (currentSpeed != agent.velocity.magnitude)
@@ -67,6 +69,7 @@ public class EntityMover : MonoBehaviour
     }
     private void SetDestination()
     {
+        Debug.Log("Setting dest");
         if (isStopped || isPaused) return;
         switch (destinationMode)
         {
@@ -84,6 +87,7 @@ public class EntityMover : MonoBehaviour
                 return;
             }
         }
+        if (destination != transform.position) hasArrived = false;
     }
     private IEnumerator WaitAndSetDestination(float seconds)
     {
@@ -99,6 +103,7 @@ public class EntityMover : MonoBehaviour
     }
     private void WaitAndSetDestination()
     {
+        Debug.Log("Starting waiting");
         if (shouldFleePlayer)
         {
             if (playerDetecter.isPlayerInRange)
@@ -107,6 +112,7 @@ public class EntityMover : MonoBehaviour
                 return;
             }
         }
+        SetRunning(false);
         if (maxWaitTimeOnDestination == 0f) SetDestination();
         float seconds = Random.Range(minWaitTimeOnDestination, maxWaitTimeOnDestination);
         StartCoroutine(WaitAndSetDestination(seconds));
@@ -147,10 +153,11 @@ public class EntityMover : MonoBehaviour
 
     private void FleePlayer()
     {
-        Debug.Log("ok");
-        Vector3 fleePoint = playerDetecter.player.transform.forward.normalized * fleeDistance + transform.position;
-        Debug.Log(fleePoint);
-        if (NavMesh.SamplePosition(fleePoint, out NavMeshHit hit, 1.0f, agent.areaMask))
+        SetRunning(true);
+        Debug.Log("Panic");
+        Vector3 fleePoint = (transform.position - playerDetecter.player.transform.position).normalized * fleeDistance + transform.position;
+        fleePoint.y = 0f;
+        if (NavMesh.SamplePosition(fleePoint, out NavMeshHit hit, 5.0f, agent.areaMask))
         {
             agent.SetDestination(hit.position);
             return;
