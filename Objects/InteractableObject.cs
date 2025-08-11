@@ -36,6 +36,14 @@ public class InteractableObject : MonoBehaviour, IInteractable
             return objectSO.neededKeyID;
         }
     }
+    private int keyID
+    {
+        get
+        {
+            if (objectSO == null) return 0;
+            return objectSO.keyID;
+        }
+    }
     private bool isCollectible
     {
         get
