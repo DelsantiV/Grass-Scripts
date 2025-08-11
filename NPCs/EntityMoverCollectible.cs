@@ -12,6 +12,7 @@ public class EntityMoverCollectible : EntityMover
     }
     protected override void Start()
     {
+        base.Start();
         interactableObject.OnCollected.AddListener(StopMovement);
         interactableObject.OnDropped.AddListener(InitializeBehaviour);
     }
