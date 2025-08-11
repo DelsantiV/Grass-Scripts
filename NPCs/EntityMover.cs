@@ -178,7 +178,6 @@ public class EntityMover : MonoBehaviour
         if (NavMesh.SamplePosition(fleePoint, out NavMeshHit hit, 5.0f, agent.areaMask))
         {
             agent.SetDestination(hit.position);
-            Debug.Log(agent.remainingDistance.ToString());
             return;
         }
         SetDestination();
