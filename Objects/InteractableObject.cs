@@ -59,7 +59,6 @@ public class InteractableObject : MonoBehaviour, IInteractable
     {
         if (neededKeyID != 0)
         {
-            if (player.currentObject == null) return;
             if (!player.IsCurrentObjectKey(neededKeyID)) return;
         }
         Interact(player);
