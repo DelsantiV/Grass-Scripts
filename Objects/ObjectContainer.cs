@@ -21,6 +21,13 @@ public class ObjectContainer : MonoBehaviour
     {
         containedObject.transform.parent = transform;
         containedObject.transform.SetLocalPositionAndRotation(containedObjectPosition, Quaternion.Euler(containedObjectRotation));
-        if (containedObject.TryGetComponent<InteractableObject>(out InteractableObject iobj)) iobj.shouldHaveRigidBody = false;
+        if (containedObject.TryGetComponent<InteractableObject>(out InteractableObject iobj))
+        {
+            if (iobj.shouldHaveRigidBody)
+            {
+                iobj.OnCollected.AddListener(() => iobj.shouldHaveRigidBody = true);
+                iobj.shouldHaveRigidBody = false;
+            }
+        }
     }
 }
