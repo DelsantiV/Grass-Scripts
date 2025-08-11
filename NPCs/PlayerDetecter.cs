@@ -18,7 +18,6 @@ public class PlayerDetecter : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Player detected");
             player = other.gameObject.GetComponent<Player>();
             OnPlayerDetected.Invoke();
         }
