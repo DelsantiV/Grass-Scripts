@@ -43,10 +43,8 @@ public class EntityMover : MonoBehaviour
     }
     private void Update()
     {   
-        Debug.Log("Arrived: " + hasArrived);
         if (isStopped || isPaused)
         {
-            Debug.Log("Paused");
             return;
         }
         if (currentSpeed != agent.velocity.magnitude)
@@ -62,7 +60,6 @@ public class EntityMover : MonoBehaviour
         {
             if (agent.remainingDistance < 0.001f)
             {
-                Debug.Log("arrived !");
                 if (!hasArrived) OnDestinationReached.Invoke();
                 hasArrived = true;
             }
@@ -88,7 +85,6 @@ public class EntityMover : MonoBehaviour
     }
     private void SetDestination()
     {
-        Debug.Log("Setting dest");
         if (isStopped || isPaused) return;
         switch (destinationMode)
         {
@@ -121,7 +117,6 @@ public class EntityMover : MonoBehaviour
     }
     private void WaitAndSetDestination()
     {
-        Debug.Log("Starting waiting");
         if (shouldFleePlayer)
         {
             if (playerDetecter.isPlayerInRange)
@@ -173,13 +168,11 @@ public class EntityMover : MonoBehaviour
     {
         SetRunning(true);
         agent.autoBraking = false;
-        Debug.Log("Panic");
         isPaused = false;
         Vector3 correctedPlayerPos = new Vector3(playerDetecter.player.transform.position.x, transform.position.y, playerDetecter.player.transform.position.z);
         Vector3 fleeDirection = (transform.position - correctedPlayerPos).normalized;
         if (fleeDirection == Vector3.zero) fleeDirection = transform.forward;
         Vector3 fleePoint = fleeDirection * fleeDistance + transform.position;
-        Debug.Log(transform.position.ToString() + " to " + fleePoint.ToString());
         if (NavMesh.SamplePosition(fleePoint, out NavMeshHit hit, 5.0f, agent.areaMask))
         {
             agent.SetDestination(hit.position);
