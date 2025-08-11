@@ -7,16 +7,17 @@ using UnityEngine.Events;
 [RequireComponent(typeof(NavMeshAgent))]
 public class EntityMover : MonoBehaviour
 {
-    [SerializeField] private DestinationMode destinationMode;
-    [SerializeField] private float walkingSpeed;
-    [SerializeField] private float runningSpeed;
+    [SerializeField] private DestinationMode destinationMode = DestinationMode.BackAndForth;
+    [SerializeField] private float walkingSpeed = 1f;
+    [SerializeField] private float runningSpeed = 4f;
     [SerializeField] private bool isRunning;
-    [SerializeField] private float minWaitTimeOnDestination;
-    [SerializeField] private float maxWaitTimeOnDestination;
-    [SerializeField] private float destinationRange;
+    [SerializeField] private float minWaitTimeOnDestination = 3f;
+    [SerializeField] private float maxWaitTimeOnDestination = 5f;
+    [SerializeField] private float destinationRange = 15f;
     [SerializeField] private Vector3 destination;
     [SerializeField] private bool shouldFleePlayer;
-    [SerializeField] private float fleeDistance;
+    [SerializeField] private float fleeDistance = 10f;
+    [SerializeField] private float fleeUpdateTimeInterval = 0.2f;
     [SerializeField] private PlayerDetecter playerDetecter;
     private NavMeshAgent agent;
     private Vector3 origin;
@@ -41,14 +42,12 @@ public class EntityMover : MonoBehaviour
         if (shouldFleePlayer) playerDetecter.OnPlayerDetected.AddListener(OnPlayerDetected);
     }
     private void Update()
-    {   if (isStopped || isPaused) return;     
-        if (destinationMode != DestinationMode.None)
+    {   
+        Debug.Log("Arrived: " + hasArrived);
+        if (isStopped || isPaused)
         {
-            if (agent.remainingDistance < 0.001f && !hasArrived)
-            {
-                OnDestinationReached.Invoke();
-                hasArrived = true;
-            }
+            Debug.Log("Paused");
+            return;
         }
         if (currentSpeed != agent.velocity.magnitude)
         {
@@ -57,15 +56,35 @@ public class EntityMover : MonoBehaviour
             animatorHandler.SetAnimationSpeed(relativeSpeed);
         }
     }
+    private void LateUpdate()
+    {
+        if (destinationMode != DestinationMode.None)
+        {
+            if (agent.remainingDistance < 0.001f)
+            {
+                Debug.Log("arrived !");
+                if (!hasArrived) OnDestinationReached.Invoke();
+                hasArrived = true;
+            }
+            else
+            {
+                hasArrived = false;
+            }
+        }
+    }
     public void InitializeBehaviour()
     {
         agent.enabled = true;
         isStopped = false;
         enabled = true;
-        if (shouldFleePlayer) playerDetecter.EnableDetecter(true);
+        if (shouldFleePlayer)
+        {
+            playerDetecter.EnableDetecter(true);
+            if (playerDetecter.isPlayerInRange) FleePlayer();
+        }
         if (destinationMode == DestinationMode.BackAndForth || destinationMode == DestinationMode.Random) OnDestinationReached.AddListener(WaitAndSetDestination);
         if (destinationMode == DestinationMode.Destination) OnDestinationReached.AddListener(StopMovement);
-        SetDestination();
+        WaitAndSetDestination();
     }
     private void SetDestination()
     {
@@ -87,7 +106,6 @@ public class EntityMover : MonoBehaviour
                 return;
             }
         }
-        if (destination != transform.position) hasArrived = false;
     }
     private IEnumerator WaitAndSetDestination(float seconds)
     {
@@ -112,6 +130,7 @@ public class EntityMover : MonoBehaviour
                 return;
             }
         }
+        agent.autoBraking = true;
         SetRunning(false);
         if (maxWaitTimeOnDestination == 0f) SetDestination();
         float seconds = Random.Range(minWaitTimeOnDestination, maxWaitTimeOnDestination);
@@ -147,22 +166,36 @@ public class EntityMover : MonoBehaviour
     }
     private void OnPlayerDetected()
     {
-        isPaused = false;
         FleePlayer();
     }
 
     private void FleePlayer()
     {
         SetRunning(true);
+        agent.autoBraking = false;
         Debug.Log("Panic");
-        Vector3 fleePoint = (transform.position - playerDetecter.player.transform.position).normalized * fleeDistance + transform.position;
-        fleePoint.y = 0f;
+        isPaused = false;
+        Vector3 correctedPlayerPos = new Vector3(playerDetecter.player.transform.position.x, transform.position.y, playerDetecter.player.transform.position.z);
+        Vector3 fleeDirection = (transform.position - correctedPlayerPos).normalized;
+        if (fleeDirection == Vector3.zero) fleeDirection = transform.forward;
+        Vector3 fleePoint = fleeDirection * fleeDistance + transform.position;
+        Debug.Log(transform.position.ToString() + " to " + fleePoint.ToString());
         if (NavMesh.SamplePosition(fleePoint, out NavMeshHit hit, 5.0f, agent.areaMask))
         {
             agent.SetDestination(hit.position);
+            Debug.Log(agent.remainingDistance.ToString());
             return;
         }
         SetDestination();
+        StartCoroutine(WaitAndUpdateFleeDestination(fleeUpdateTimeInterval));
+    }
+    private IEnumerator WaitAndUpdateFleeDestination(float secondsToWait)
+    {
+        yield return new WaitForSeconds(secondsToWait);
+        if (shouldFleePlayer)
+        {
+            if (playerDetecter.isPlayerInRange) FleePlayer();
+        }
     }
     public enum DestinationMode
     {
