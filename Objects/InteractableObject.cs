@@ -44,7 +44,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
             return objectSO.keyID;
         }
     }
-    private bool isCollectible
+    public bool isCollectible
     {
         get
         {
@@ -63,6 +63,14 @@ public class InteractableObject : MonoBehaviour, IInteractable
     {
         if (isCollectible && shouldHaveRigidBody) rb = gameObject.GetOrAddComponent<Rigidbody>();
     }
+    protected virtual void Update()
+    {
+        if (transform.position.y < -5f)
+        {
+            transform.position += new Vector3(0, 7, 0);
+            rb.linearVelocity = Vector3.zero;
+        }
+    }
     public virtual void OnInteract(Player player)
     {
         if (neededKeyID != 0)
@@ -80,7 +88,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         }
     }
     public virtual void OnStopInteract(Player player) { }
-    protected virtual void TryCollectObject(Player player)
+    public virtual void TryCollectObject(Player player)
     {
         if (player.currentObject == null)
         {
@@ -99,7 +107,11 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public virtual void OnObjectDropped()
     {
         transform.parent = null;
-        if (shouldHaveRigidBody) rb.isKinematic = false;
+        if (shouldHaveRigidBody) 
+        {
+            if (rb == null) rb = gameObject.GetOrAddComponent<Rigidbody>();
+            rb.isKinematic = false; 
+        }
         collider.enabled = true;
         gameObject.SetLayerAllChildren(LayerMask.NameToLayer("Default"));
         OnDropped.Invoke();
