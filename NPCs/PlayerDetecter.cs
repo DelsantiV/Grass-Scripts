@@ -10,13 +10,15 @@ public class PlayerDetecter : MonoBehaviour
 
     private void Awake()
     {
-        detecter = GetComponent<SphereCollider>();
+        detecter = gameObject.GetOrAddComponent<SphereCollider>();
         detecter.isTrigger = true;
+        OnPlayerDetected = new();
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            Debug.Log("Player detected");
             player = other.gameObject.GetComponent<Player>();
             OnPlayerDetected.Invoke();
         }
