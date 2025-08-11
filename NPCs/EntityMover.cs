@@ -39,7 +39,13 @@ public class EntityMover : MonoBehaviour
     }
     protected virtual void Start()
     {
-        if (shouldFleePlayer) playerDetecter.OnPlayerDetected.AddListener(OnPlayerDetected);
+        if (shouldFleePlayer)
+        {
+            playerDetecter.EnableDetecter(true);
+            if (playerDetecter.isPlayerInRange) FleePlayer();
+            playerDetecter.OnPlayerDetected.AddListener(OnPlayerDetected);
+        }
+
     }
     private void Update()
     {   
@@ -74,11 +80,7 @@ public class EntityMover : MonoBehaviour
         agent.enabled = true;
         isStopped = false;
         enabled = true;
-        if (shouldFleePlayer)
-        {
-            playerDetecter.EnableDetecter(true);
-            if (playerDetecter.isPlayerInRange) FleePlayer();
-        }
+        
         if (destinationMode == DestinationMode.BackAndForth || destinationMode == DestinationMode.Random) OnDestinationReached.AddListener(WaitAndSetDestination);
         if (destinationMode == DestinationMode.Destination) OnDestinationReached.AddListener(StopMovement);
         WaitAndSetDestination();

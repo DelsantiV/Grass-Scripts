@@ -1,19 +1,28 @@
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using DialogueEditor;
+using Unity.VisualScripting;
 
 
 public class BaseNPC : MonoBehaviour, IInteractable
 { 
     [SerializeField] protected NPCSO NPCSO;
+    [SerializeField] protected BaseQuestSO quest;
     [SerializeField] private Rig rig;
     [SerializeField] private Transform headLookAtTransform;
     [SerializeField] private CanvasManager canvasManager;
+
+
     [SerializeField] private NPCConversation baseConversation;
+
+    [SerializeField] private NPCConversation questRefusedConversation;
+
     [SerializeField] private NPCConversation questAcceptedConversation;
+
     [SerializeField] private NPCConversation questCompletedConversation;
 
-    private bool questAccepted;
+
+    [SerializeField] private NPCConversation conversation;
 
     public float speed;
     protected Animator animator;
@@ -35,6 +44,7 @@ public class BaseNPC : MonoBehaviour, IInteractable
         outline = gameObject.GetOrAddComponent<Outline>();
         outline.OutlineMode = Outline.Mode.OutlineAndSilhouette;
         outline.OutlineColor = Color.whiteSmoke;
+        conversation = baseConversation;
     }
 
 
@@ -47,25 +57,15 @@ public class BaseNPC : MonoBehaviour, IInteractable
 
         player.SetCursorLockMode(false);
 
-
-        ConversationManager.Instance.StartConversation((!questAccepted) ? baseConversation : questAcceptedConversation);
+        
+        ConversationManager.Instance.StartConversation(conversation);
 
 
 
         
+
+        
     }
-
-
-    public void QuestAccepted()
-    {
-
-        questAccepted = true;
-
-    }
-
-
-
-
     protected virtual void EndDialog(Player player)
     {
 
@@ -82,18 +82,85 @@ public class BaseNPC : MonoBehaviour, IInteractable
         
     }
 
+    #endregion
 
+    #region Quest
+
+    public void QuestRefused()
+    {
+
+        conversation = questRefusedConversation;
+
+    }
+    
+    
+    
+    public void QuestAccepted()
+    {
+
+
+        conversation = questAcceptedConversation;
+
+        Instantiate(quest.questObject.gameObject, quest.questObjectSpawnPosition, quest.questObjectSpawnRotation);
+
+    }
+
+    public void SpawnQuestObject()
+    {
+
+        
+
+    }
+
+
+
+    public void QuestCompleted()
+    {
+
+        conversation = questCompletedConversation;
+
+    }
+
+    public void VerifyObject(Player player)
+    {
+
+        if (player.currentObject != null)
+        {
+            if (player.IsCurrentObjectKey(quest.questObject.objectSO.keyID))
+            {
+
+
+                QuestCompleted();
+
+
+            }
+
+        }
+
+    }
 
 
 
 
     #endregion
 
+
+
+
+
+
+
+
+
+
     #region Interact
     public virtual void OnInteract(Player player)
     {
 
         canvasManager.CloseInteractionText();
+        
+        VerifyObject(player);
+
         StartDialog(player);
 
         isLookAtPosition = true;
@@ -109,7 +176,7 @@ public class BaseNPC : MonoBehaviour, IInteractable
 
     #endregion
 
-    #region LookAt
+    #region LookedAt
     public void OnLookAt(Player player)
     {
         outline.enabled = true;
