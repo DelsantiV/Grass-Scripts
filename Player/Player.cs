@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
                 }
                 currentInteraction = newInteraction;
                 currentInteraction.OnLookAt(this);
+                SetReticle(currentInteraction);
                 return;
             }
         }
@@ -54,6 +55,7 @@ public class Player : MonoBehaviour
                 currentInteraction?.OnStopInteract(this);
                 isInteracting = false;
             }
+            canvasManager.SetReticle(CanvasManager.ReticleType.Base);
             canvasManager.CloseInteractionText();
             canvasManager.CloseInteractionText();
             isLooking = false;
@@ -116,5 +118,30 @@ public class Player : MonoBehaviour
     {
         Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
         controller.cameraCanMove = locked;
+    }
+    private void SetReticle(IInteractable interactable)
+    {
+        if (interactable != null)
+        {
+            if (interactable is BaseNPC) 
+            { 
+                canvasManager.SetReticle(CanvasManager.ReticleType.Talk);
+                return;
+            }
+            if (interactable is InteractableObject)
+            {
+                if ((interactable as InteractableObject).isCollectible)
+                {
+                    canvasManager.SetReticle(CanvasManager.ReticleType.Grab);
+                    return;
+                }
+            }
+            if (interactable is WashableDecal)
+            {
+                canvasManager.SetReticle(CanvasManager.ReticleType.Wash);
+                return;
+            }
+        }
+        canvasManager.SetReticle(CanvasManager.ReticleType.Base);
     }
 }
