@@ -12,7 +12,7 @@ public class DoorLock : InteractableObject
         base.Awake();
         if (door == null) door = GetComponentInParent<Openable>();
         door.isLocked = true;
-        
+        outline.OutlineMode = Outline.Mode.OutlineVisible;
     }
     protected override void Interact(Player player)
     {
