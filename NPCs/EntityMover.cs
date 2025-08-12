@@ -56,8 +56,14 @@ public class EntityMover : MonoBehaviour
         if (currentSpeed != agent.velocity.magnitude)
         {
             currentSpeed = agent.velocity.magnitude;
-            float relativeSpeed = Mathf.Clamp01((currentSpeed - walkingSpeed)/(runningSpeed - walkingSpeed) + 0.05f);
-            animatorHandler.SetAnimationSpeed(relativeSpeed);
+            float relativeSpeed = Mathf.Clamp01((currentSpeed - walkingSpeed)/(runningSpeed - walkingSpeed));
+            bool isMoving = agent.velocity.magnitude > 0.01f;
+            float animatorSpeed = 1f;
+            if (isMoving && currentSpeed < walkingSpeed)
+            {
+                animatorSpeed = currentSpeed / walkingSpeed;
+            }
+            animatorHandler.SetAnimationSpeed(relativeSpeed, isMoving, animatorSpeed);
         }
     }
     private void LateUpdate()
@@ -108,7 +114,7 @@ public class EntityMover : MonoBehaviour
     private IEnumerator WaitAndSetDestination(float seconds)
     {
         isPaused = true;
-        animatorHandler.SetAnimationSpeed(0f);
+        animatorHandler.SetAnimationSpeed(0f, false);
         yield return new WaitForSeconds(seconds);
         if (isPaused)
         {
@@ -159,7 +165,7 @@ public class EntityMover : MonoBehaviour
         agent.enabled = false;
         enabled = false;
         playerDetecter.EnableDetecter(false);
-        animatorHandler.SetAnimationSpeed(0f);
+        animatorHandler.SetAnimationSpeed(0f, false);
     }
     private void OnPlayerDetected()
     {
@@ -202,10 +208,17 @@ public class EntityMover : MonoBehaviour
     {
         private Animator animator;
         public AnimatorHandler(Animator animator) { this.animator = animator; }
+        private bool isMoving;
 
-        public void SetAnimationSpeed(float speed)
+        public void SetAnimationSpeed(float speed, bool moving, float animationSpeed = 1f)
         {
+            if (moving != isMoving) 
+            { 
+                isMoving = moving;
+                animator.SetBool("isMoving", isMoving);
+            }
             animator.SetFloat("Speed", speed);
+            animator.speed = animationSpeed;
         }
     }
 }
