@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
@@ -6,6 +7,8 @@ public class Openable : InteractableObject
     public bool isLocked;
     [SerializeField] protected bool uninteractableAfterOpen = false;
     [SerializeField] protected bool disableColliderWhenOpen = false;
+    [SerializeField] protected bool autoClose = false;
+    [SerializeField] protected float autoCloseTime = 2f;
     public override bool ShouldDisplayNameOnMouseOver => isLocked;
     private Animator animator;
     private bool isOpen;
@@ -32,7 +35,6 @@ public class Openable : InteractableObject
         Open();
         if (isContainer) container.Open();
         outline.OutlineColor = Color.aliceBlue;
-        if (uninteractableAfterOpen) SetUnInteractable();
     }
 
     protected override void Interact(Player player)
@@ -45,14 +47,26 @@ public class Openable : InteractableObject
     }
     public void Open()
     {
+        if (uninteractableAfterOpen) SetUnInteractable();
         isOpen = true;
-        if (disableColliderWhenOpen && _collider != null) _collider.enabled = false;
+        if (disableColliderWhenOpen && _collider != null) _collider.isTrigger = false;
         animator.SetTrigger("Open");   
+        if (autoClose)
+        {
+            StartCoroutine(CloseInSeconds(autoCloseTime));
+        }
     }
     protected void Close()
     {
-        if (disableColliderWhenOpen && _collider != null) _collider.enabled = true;
+        if (disableColliderWhenOpen && _collider != null) _collider.isTrigger = true;
         isOpen = false;
         animator.SetTrigger("Close");
+    }
+    protected IEnumerator CloseInSeconds(float seconds)
+    {
+        isLocked = true;
+        yield return new WaitForSeconds(seconds);
+        Close();
+        isLocked = false;
     }
 }
