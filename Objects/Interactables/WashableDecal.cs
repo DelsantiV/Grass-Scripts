@@ -17,33 +17,31 @@ public class WashableDecal : MonoBehaviour, IInteractable
     public bool ShouldDisplayNameOnMouseOver => false;
     private DecalProjector projector;
     private InteractableObject soap;
+    private ParticleSystem soapParticles;
     private Player player;
     private void Awake()
     {
         projector = gameObject.GetOrAddComponent<DecalProjector>();
         collider = GetComponent<Collider>();
         projector.material = decalMaterial;
-        if (soapAnimator == null) soapAnimator = GetComponentInChildren<Animator>();
+        if (soapAnimator == null) 
+        {
+            soapAnimator = GetComponentInChildren<Animator>();
+        }
+        soapParticles = soapAnimator.gameObject.GetComponent<ParticleSystem>();
     }
 
     public void OnInteract(Player player)
     {
         if (!player.IsCurrentObjectKey(keyIDToWash) && keyIDToWash != 0) return;
-        projector.fadeFactor -= washStep;
-        if (projector.fadeFactor == 0f) 
-        { 
-            Destroy(gameObject);
-        }
-        else
+        projector.fadeFactor = Mathf.Clamp01(projector.fadeFactor - washStep);
+        if (keyIDToWash != 0)
         {
-            if (keyIDToWash != 0)
-            {
-                soap = player.TakeObject();
-                this.player = player;
-                AnimateSoap();
-            }
-            StartCoroutine(CoolDown());
+            soap = player.TakeObject();
+            this.player = player;
+            AnimateSoap();
         }
+        StartCoroutine(CoolDown());
     }
 
     public void OnLookAt(Player player)
@@ -53,7 +51,6 @@ public class WashableDecal : MonoBehaviour, IInteractable
 
     public void OnStopInteract(Player player)
     {
-        player = null;
     }
 
     public void OnStopLookAt(Player player)
@@ -73,6 +70,14 @@ public class WashableDecal : MonoBehaviour, IInteractable
         {
             soap.TryCollectObject(player);
         }
+        if (soapParticles != null) soapParticles.Stop();
+
+        if (projector.fadeFactor == 0f)
+        {
+            enabled = false;
+            projector.enabled = false;
+            Destroy(gameObject);
+        }
 
     }
     private void AnimateSoap()
@@ -80,5 +85,6 @@ public class WashableDecal : MonoBehaviour, IInteractable
         soap.transform.parent = soapAnimator.transform;
         soap.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
         soapAnimator.SetTrigger("StartWashing");
+        if (soapParticles != null) soapParticles.Play();
     }
 }
