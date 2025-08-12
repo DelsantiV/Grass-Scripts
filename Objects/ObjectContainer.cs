@@ -15,7 +15,7 @@ public class ObjectContainer : MonoBehaviour
     }
     public virtual void Open()
     {
-        SetContainedObject();
+        if (instantiateObjectOnlyOnOpen) SetContainedObject();
     }
     protected virtual void SetContainedObject()
     {
