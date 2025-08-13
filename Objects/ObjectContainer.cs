@@ -6,7 +6,7 @@ public class ObjectContainer : MonoBehaviour
     [SerializeField] protected List<ContainedObject> initialObjects;
     public int maxNumberOfObjects;
     [SerializeField] protected bool instantiateObjectOnlyOnOpen;
-    protected List<ContainedObject> containedObjects;
+    public List<ContainedObject> containedObjects { get ; private set; }
     public bool isFull { get => containedObjects.Count >= maxNumberOfObjects; }
     public int currentNumberOfObjects { get => containedObjects.Count; }
     protected virtual void Awake()
@@ -42,7 +42,6 @@ public class ObjectContainer : MonoBehaviour
     }
     private void OnContainedObjectCollected(ContainedObject obj, bool addRigidbody)
     {
-        Debug.Log(addRigidbody);
         if (addRigidbody) obj.iobj.shouldHaveRigidBody = true;
         containedObjects.Remove(obj);
         obj.iobj.OnCollected.RemoveAllListeners();
