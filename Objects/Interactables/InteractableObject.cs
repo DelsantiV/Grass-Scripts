@@ -100,7 +100,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
                 rb = gameObject.GetOrAddComponent<Rigidbody>();
                 rb.isKinematic = true;
             }
-            collider.enabled = false;
+            collider.isTrigger = true;
             OnCollected.Invoke();
         }
     }
@@ -112,7 +112,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
             if (rb == null) rb = gameObject.GetOrAddComponent<Rigidbody>();
             rb.isKinematic = false; 
         }
-        collider.enabled = true;
+        collider.isTrigger = false;
         gameObject.SetLayerAllChildren(LayerMask.NameToLayer("Default"));
         OnDropped.Invoke();
     }
