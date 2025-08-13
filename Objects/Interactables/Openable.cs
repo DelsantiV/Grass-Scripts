@@ -9,6 +9,8 @@ public class Openable : InteractableObject
     [SerializeField] protected bool disableColliderWhenOpen = false;
     [SerializeField] protected bool autoClose = false;
     [SerializeField] protected float autoCloseTime = 2f;
+    [SerializeField] Color outlineColor = Color.aliceBlue;
+    [SerializeField] Color lockedOutlineColor = Color.mediumVioletRed;
     public override bool ShouldDisplayNameOnMouseOver => isLocked;
     private Animator animator;
     private bool isOpen;
@@ -18,6 +20,7 @@ public class Openable : InteractableObject
     protected override void Awake()
     {
         base.Awake();
+        isOpen = false;
         animator = GetComponent<Animator>();
         isContainer = TryGetComponent<ObjectContainer>(out container);
         outline.OutlineMode = Outline.Mode.OutlineVisible;
@@ -26,27 +29,33 @@ public class Openable : InteractableObject
     protected override void Start()
     {
         base.Start();
-        if (isLocked) outline.OutlineColor = Color.mediumVioletRed;
-        else outline.OutlineColor = Color.aliceBlue;
+        if (isLocked) outline.OutlineColor = lockedOutlineColor;
+        else outline.OutlineColor = outlineColor;
     }
-    public void Unlock()
+    public void Unlock(bool openOnUnlock = true)
     {
         isLocked = false;
-        Open();
+        if (openOnUnlock) Open();
         if (isContainer) container.Open();
-        outline.OutlineColor = Color.aliceBlue;
+        outline.OutlineColor = outlineColor;
+    }
+    public void Lock(bool closeOnLock = true)
+    {
+        isLocked = true;
+        if (closeOnLock) Close();
+        outline.OutlineColor = lockedOutlineColor;
     }
 
     protected override void Interact(Player player)
     {
         if (isLocked) return;
         base.Interact(player);
-        isOpen = !isOpen;
-        if (isOpen) Open();
+        if (!isOpen) Open();
         else Close();
     }
     public void Open()
     {
+        if (isOpen) return;
         if (uninteractableAfterOpen) SetUnInteractable();
         isOpen = true;
         if (disableColliderWhenOpen && _collider != null) _collider.isTrigger = false;
@@ -56,8 +65,9 @@ public class Openable : InteractableObject
             StartCoroutine(CloseInSeconds(autoCloseTime));
         }
     }
-    protected void Close()
+    public void Close()
     {
+        if (!isOpen) return;
         if (disableColliderWhenOpen && _collider != null) _collider.isTrigger = true;
         isOpen = false;
         animator.SetTrigger("Close");
