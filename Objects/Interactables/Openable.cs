@@ -9,7 +9,7 @@ public class Openable : InteractableObject
     [SerializeField] protected bool disableColliderWhenOpen = false;
     [SerializeField] protected bool autoClose = false;
     [SerializeField] protected float autoCloseTime = 2f;
-    [SerializeField] Color outlineColor = Color.aliceBlue;
+    [SerializeField] Color unlockOutlineColor = Color.aliceBlue;
     [SerializeField] Color lockedOutlineColor = Color.mediumVioletRed;
     public override bool ShouldDisplayNameOnMouseOver => isLocked;
     private Animator animator;
@@ -30,14 +30,14 @@ public class Openable : InteractableObject
     {
         base.Start();
         if (isLocked) outline.OutlineColor = lockedOutlineColor;
-        else outline.OutlineColor = outlineColor;
+        else outline.OutlineColor = unlockOutlineColor;
     }
     public void Unlock(bool openOnUnlock = true)
     {
         isLocked = false;
         if (openOnUnlock) Open();
         if (isContainer) container.Open();
-        outline.OutlineColor = outlineColor;
+        outline.OutlineColor = unlockOutlineColor;
     }
     public void Lock(bool closeOnLock = true)
     {

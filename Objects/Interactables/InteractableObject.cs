@@ -6,6 +6,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
 {
     public ObjectSO objectSO;
     [SerializeField] protected bool outlineOnLookAt = true;
+    [SerializeField] private Color outlinedColor = Color.orange;
     public UnityEvent OnCollected;
     public UnityEvent OnDropped;
     private new Collider collider;
@@ -55,6 +56,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     protected virtual void Awake()
     {
         outline = gameObject.GetOrAddComponent<Outline>();
+        outline.OutlineColor = outlinedColor;
         OnCollected = new();
         OnDropped = new();
         collider = gameObject.GetComponent<Collider>();
