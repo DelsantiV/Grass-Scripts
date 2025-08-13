@@ -94,6 +94,7 @@ public class Player : MonoBehaviour
     /// <returns></returns>
     public InteractableObject TakeObject()
     {
+        if (currentObject == null) return null;
         InteractableObject obj = currentObject;
         currentObject.gameObject.SetLayerAllChildren(LayerMask.NameToLayer("Default"));
         currentObject = null;
