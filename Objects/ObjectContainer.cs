@@ -36,7 +36,6 @@ public class ObjectContainer : MonoBehaviour
         containedObject.iobj.OnCollected.AddListener(() => OnContainedObjectCollected(containedObject, addRb));
         if (containedObject.iobj.shouldHaveRigidBody)
         {
-            Debug.Log("coucou");
             containedObject.iobj.shouldHaveRigidBody = false;
             if (containedObject.iobj.TryGetComponent<Rigidbody>(out Rigidbody rb)) Destroy(rb); 
         }
