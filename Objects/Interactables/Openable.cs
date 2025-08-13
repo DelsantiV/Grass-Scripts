@@ -58,7 +58,7 @@ public class Openable : InteractableObject
         if (isOpen) return;
         if (uninteractableAfterOpen) SetUnInteractable();
         isOpen = true;
-        if (disableColliderWhenOpen && _collider != null) _collider.isTrigger = false;
+        if (disableColliderWhenOpen && _collider != null) _collider.isTrigger = true;
         animator.SetTrigger("Open");   
         if (autoClose)
         {
@@ -68,7 +68,7 @@ public class Openable : InteractableObject
     public void Close()
     {
         if (!isOpen) return;
-        if (disableColliderWhenOpen && _collider != null) _collider.isTrigger = true;
+        if (disableColliderWhenOpen && _collider != null) _collider.isTrigger = false;
         isOpen = false;
         animator.SetTrigger("Close");
     }
