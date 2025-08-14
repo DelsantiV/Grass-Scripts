@@ -9,6 +9,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     [SerializeField] private Color outlinedColor = Color.orange;
     public UnityEvent OnCollected;
     public UnityEvent OnDropped;
+    public UnityEvent OnInteracted;
     private new Collider collider;
     public virtual string ObjectName
     {
@@ -59,6 +60,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         outline.OutlineColor = outlinedColor;
         OnCollected = new();
         OnDropped = new();
+        OnInteracted = new();
         collider = gameObject.GetComponent<Collider>();
     }
     protected virtual void Start()
@@ -83,6 +85,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     }
     protected virtual void Interact(Player player)
     {
+        OnInteracted.Invoke();
         if (isCollectible)
         {
             TryCollectObject(player);
