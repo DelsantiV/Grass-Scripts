@@ -7,7 +7,6 @@ using Unity.VisualScripting;
 public class BaseNPC : MonoBehaviour, IInteractable
 { 
     [SerializeField] protected NPCSO NPCSO;
-    [SerializeField] protected BaseQuestSO quest;
     [SerializeField] private Rig rig;
     [SerializeField] private Transform headLookAtTransform;
     [SerializeField] private CanvasManager canvasManager;
@@ -15,14 +14,10 @@ public class BaseNPC : MonoBehaviour, IInteractable
 
     [SerializeField] private NPCConversation baseConversation;
 
-    [SerializeField] private NPCConversation questRefusedConversation;
-
-    [SerializeField] private NPCConversation questAcceptedConversation;
-
-    [SerializeField] private NPCConversation questCompletedConversation;
+    [SerializeField] private NPCConversation secondMeetingConversation;
 
 
-    [SerializeField] private NPCConversation conversation;
+    [SerializeField] protected NPCConversation conversation;
 
     public float speed;
     protected Animator animator;
@@ -31,6 +26,8 @@ public class BaseNPC : MonoBehaviour, IInteractable
 
 
     private bool isLookAtPosition;
+
+
 
     public bool ShouldDisplayNameOnMouseOver => true;
 
@@ -42,7 +39,7 @@ public class BaseNPC : MonoBehaviour, IInteractable
     protected virtual void Awake()
     {
         outline = gameObject.GetOrAddComponent<Outline>();
-        outline.OutlineMode = Outline.Mode.OutlineAndSilhouette;
+        outline.OutlineMode = Outline.Mode.OutlineVisible;
         outline.OutlineColor = Color.whiteSmoke;
         conversation = baseConversation;
     }
@@ -59,13 +56,18 @@ public class BaseNPC : MonoBehaviour, IInteractable
 
         
         ConversationManager.Instance.StartConversation(conversation);
-
-
-
-        
-
         
     }
+
+    public void ChangeConversation()
+    {
+
+        conversation = secondMeetingConversation;
+
+    }
+
+
+
     protected virtual void EndDialog(Player player)
     {
 
@@ -84,70 +86,6 @@ public class BaseNPC : MonoBehaviour, IInteractable
 
     #endregion
 
-    #region Quest
-
-    public void QuestRefused()
-    {
-
-        conversation = questRefusedConversation;
-
-    }
-    
-    
-    
-    public void QuestAccepted()
-    {
-
-
-        conversation = questAcceptedConversation;
-
-        Instantiate(quest.questObject.gameObject, quest.questObjectSpawnPosition, quest.questObjectSpawnRotation);
-
-    }
-
-    public void SpawnQuestObject()
-    {
-
-        
-
-    }
-
-
-
-    public void QuestCompleted()
-    {
-
-        conversation = questCompletedConversation;
-
-    }
-
-    public void VerifyObject(Player player)
-    {
-
-        if (player.currentObject != null)
-        {
-            if (player.IsCurrentObjectKey(quest.questObject.objectSO.keyID))
-            {
-
-
-                QuestCompleted();
-
-
-            }
-
-        }
-
-    }
-
-
-
-
-    #endregion
-
-
-
-
-
 
 
 
@@ -159,9 +97,10 @@ public class BaseNPC : MonoBehaviour, IInteractable
 
         canvasManager.CloseInteractionText();
         
-        VerifyObject(player);
 
         StartDialog(player);
+
+        conversation = secondMeetingConversation;
 
         isLookAtPosition = true;
         headLookAtTransform.position = new Vector3(player.transform.position.x, headLookAtTransform.position.y, player.transform.position.z);
