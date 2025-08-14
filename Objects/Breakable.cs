@@ -4,12 +4,14 @@ public class Breakable : MonoBehaviour
 {
     [SerializeField] ParticleSystem _particleSystem;
     [SerializeField] InteractableObject _breaker;
+    [SerializeField] AudioClip audioClip;
+    private AudioSource audioSource;
     private bool broke = false;
 
     private void Awake()
     {
         if ( _particleSystem == null ) TryGetComponent<ParticleSystem>(out _particleSystem);
-        
+        if (audioClip != null) audioSource = gameObject.GetOrAddComponent<AudioSource>();
     }
     private void Start()
     {
@@ -27,6 +29,7 @@ public class Breakable : MonoBehaviour
         }
         if (_particleSystem != null) { _particleSystem.Play(); }
         broke = true;
+        if (audioClip != null) audioSource.PlayOneShot(audioClip);
     }
 
     private void OnTriggerEnter(Collider other)
