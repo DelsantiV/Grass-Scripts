@@ -16,6 +16,7 @@ public class ObjectReceiver : MonoBehaviour, IInteractable
     {
         if (outlineOnLookAt) outline = gameObject.GetOrAddComponent<Outline>();
         outline.OutlineColor = outlinedColor;
+        outline.OutlineMode = Outline.Mode.OutlineVisible;
         outline.enabled = false;
         freePositions = objectsPositions;
         if (container == null) container = gameObject.GetOrAddComponent<ObjectContainer>();
@@ -24,7 +25,7 @@ public class ObjectReceiver : MonoBehaviour, IInteractable
     {
         foreach (ContainedObject obj in container.containedObjects)
         {
-            if (objectsPositions.Contains(obj.position)) objectsPositions.Remove(obj.position);
+            if (freePositions.Contains(obj.position)) freePositions.Remove(obj.position);
             obj.iobj.OnCollected.AddListener(() => freePositions.Add(obj.position));
         }
     }
@@ -49,7 +50,6 @@ public class ObjectReceiver : MonoBehaviour, IInteractable
             }
             ContainedObject containedObj = new(newObj, position, Quaternion.identity);
             container.AddContainedObject(containedObj);
-            objectsPositions.Add(containedObj.position);
         }
     }
 
