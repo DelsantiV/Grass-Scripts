@@ -1,6 +1,4 @@
-using Controller;
 using System.Collections;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -46,7 +44,6 @@ public class Player : MonoBehaviour
             float distanceCovered = (Time.time - startTime) * lerpSpeed;
             PlayerCamera.transform.localPosition = Vector3.Lerp(startPos, Vector3.zero, distanceCovered / startPos.magnitude);
             PlayerCamera.fieldOfView = Mathf.Lerp(baseFov, targetFov, distanceCovered /startPos.magnitude);
-            if (distanceCovered > startPos.magnitude * 0.5 && lerpSpeed == 0.2f) { lerpSpeed = 0.4f; }
             yield return null;
         }
         PlayerCamera.transform.localPosition = Vector3.zero;
