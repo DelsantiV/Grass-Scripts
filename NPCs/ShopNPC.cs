@@ -1,6 +1,7 @@
 using DialogueEditor;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.UI;
 
 public class ShopNPC : BaseNPC
 {
@@ -32,6 +33,13 @@ public class ShopNPC : BaseNPC
 
     }
 
+    public override void OnStopLookAt(Player player)
+    {
+        CloseOptionalText();
+
+        base.OnStopLookAt(player);
+    }
+
     public void SaidHello()
     {
 
@@ -39,6 +47,13 @@ public class ShopNPC : BaseNPC
 
         saidHello = true;
 
+
+    }
+
+    public void CloseOptionalText()
+    {
+
+        canvasManager.CloseOptionalText();
 
     }
 
@@ -57,8 +72,7 @@ public class ShopNPC : BaseNPC
             else
             {
 
-                AccessibleCheckOutConversation.Root.Text = "It will be " + prize.ToString() + " $";
-
+                canvasManager.SetOptionalText("That will be " + prize.ToString() + " $");
 
                 return CheckOutConversation;
             }

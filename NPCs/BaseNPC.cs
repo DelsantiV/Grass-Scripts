@@ -7,9 +7,11 @@ using Unity.VisualScripting;
 public class BaseNPC : MonoBehaviour, IInteractable
 { 
     [SerializeField] protected NPCSO NPCSO;
-    [SerializeField] private Rig rig;
+    [SerializeField] private Rig headRig;
+    [SerializeField] private Rig rootRig;
     [SerializeField] private Transform headLookAtTransform;
-    [SerializeField] private CanvasManager canvasManager;
+    [SerializeField] private Transform rootLookAtTransform;
+    [SerializeField] protected CanvasManager canvasManager;
 
 
     [SerializeField] private NPCConversation baseConversation;
@@ -26,6 +28,8 @@ public class BaseNPC : MonoBehaviour, IInteractable
 
 
     private bool isLookAtPosition;
+
+    private bool isRootLookAtPosition;
 
 
 
@@ -100,10 +104,31 @@ public class BaseNPC : MonoBehaviour, IInteractable
 
         StartDialog(player);
 
-        conversation = secondMeetingConversation;
 
-        isLookAtPosition = true;
+        
+
         headLookAtTransform.position = new Vector3(player.transform.position.x, headLookAtTransform.position.y, player.transform.position.z);
+
+
+        Debug.Log(Vector3.Angle(transform.forward, new Vector3(player.transform.position.x - transform.position.x, headLookAtTransform.position.y, player.transform.position.z - transform.position.z)));
+
+
+
+        if (Vector3.Angle(transform.forward, new Vector3(player.transform.position.x - transform.position.x, headLookAtTransform.position.y, player.transform.position.z - transform.position.z)) < 90)
+        {
+
+
+            isLookAtPosition = true;
+        }
+        else
+        {
+
+            isRootLookAtPosition = true;
+
+        }
+
+
+        rootLookAtTransform.position = new Vector3(player.transform.position.x, rootLookAtTransform.position.y, player.transform.position.z);
 
     }
 
@@ -116,17 +141,19 @@ public class BaseNPC : MonoBehaviour, IInteractable
     #endregion
 
     #region LookedAt
-    public void OnLookAt(Player player)
+    public virtual void OnLookAt(Player player)
     {
         outline.enabled = true;
         canvasManager.SetInteractionText(NPCSO.NPCname);
     }
 
-    public void OnStopLookAt(Player player)
+    public virtual void OnStopLookAt(Player player)
     {
         outline.enabled = false;
 
         isLookAtPosition = false;
+
+        isRootLookAtPosition = false;
 
         EndDialog(player);
 
@@ -140,9 +167,19 @@ public class BaseNPC : MonoBehaviour, IInteractable
     protected virtual void Update()
     {
 
-        float targetWeight = isLookAtPosition ? 1f : 0f;
-        float lerpSpeed = 2f;
-        rig.weight = Mathf.Lerp(rig.weight, targetWeight, Time.deltaTime * lerpSpeed);
+        float headTargetWeight = isLookAtPosition ? 1f : 0f;
+
+        float rootTargetWeight = isRootLookAtPosition ? 1f : 0f;
+
+        float lerpHeadSpeed = 2f;
+
+
+        float lerpRootSpeed = 1f;
+
+
+        headRig.weight = Mathf.Lerp(headRig.weight, headTargetWeight, Time.deltaTime * lerpHeadSpeed);
+
+        rootRig.weight = Mathf.Lerp(rootRig.weight, rootTargetWeight, Time.deltaTime * lerpRootSpeed);
 
 
         if (speed != 0)

@@ -6,7 +6,6 @@ public class NPCSO : ScriptableObject
 {
     public string NPCname;
 
-
 }
 
 

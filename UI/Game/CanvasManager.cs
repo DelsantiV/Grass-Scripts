@@ -11,6 +11,7 @@ public class CanvasManager : MonoBehaviour
         Place
     }
     [SerializeField] InteractionText interactionText;
+    [SerializeField] InteractionText optionalText;
     [SerializeField] BasicUI baseReticle;
     [SerializeField] BasicUI grabReticle;
     [SerializeField] BasicUI talkReticle;
@@ -21,6 +22,7 @@ public class CanvasManager : MonoBehaviour
     private void Awake()
     {
         CloseInteractionText();
+        CloseOptionalText();
         baseReticle.Open();
         grabReticle.Close();
         talkReticle.Close();
@@ -32,6 +34,11 @@ public class CanvasManager : MonoBehaviour
 
     public void SetInteractionText(string text) => interactionText.Open(text);
     public void CloseInteractionText() => interactionText.Close();
+
+    public void SetOptionalText(string text) => optionalText.Open(text);
+
+    public void CloseOptionalText() => optionalText.Close();
+
     public void InitializeCanvas() => Destroy(startingImage);
     private BasicUI Reticle(ReticleType reticleType)
     {
