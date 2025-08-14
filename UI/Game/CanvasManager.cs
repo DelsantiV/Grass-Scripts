@@ -16,6 +16,7 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] BasicUI talkReticle;
     [SerializeField] BasicUI washReticle;
     [SerializeField] BasicUI placeReticle;
+    [SerializeField] GameObject startingImage;
     private BasicUI activeReticle;
     private void Awake()
     {
@@ -26,11 +27,12 @@ public class CanvasManager : MonoBehaviour
         washReticle.Close();
         placeReticle.Close();
         activeReticle = baseReticle;
+        startingImage.SetActive(true);
     }
 
     public void SetInteractionText(string text) => interactionText.Open(text);
     public void CloseInteractionText() => interactionText.Close();
-
+    public void InitializeCanvas() => Destroy(startingImage);
     private BasicUI Reticle(ReticleType reticleType)
     {
         switch (reticleType)

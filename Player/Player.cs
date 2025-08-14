@@ -1,3 +1,6 @@
+using Controller;
+using System.Collections;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -12,20 +15,45 @@ public class Player : MonoBehaviour
     private IInteractable currentInteraction;
     private LayerMask notInteractable;
     public InteractableObject currentObject { get; private set; }
-    public CanvasManager CanvasManager { get; private set; }
+    public CanvasManager CanvasManager { get => canvasManager; }
     private void Awake()
     {
         controller = GetComponent<FirstPersonController>();
+        controller.cameraCanMove = false;
+        controller.playerCanMove = false;
         notInteractable = LayerMask.GetMask("Ground", "Player");
-        CanvasManager = FindFirstObjectByType<CanvasManager>();
     }
-
+    private void Start()
+    {
+        StartCoroutine(InitializePlayer());
+    }
     private void Update()
     {
         HandleInteractions();
         HandleInputs();
     }
-
+    private IEnumerator InitializePlayer()
+    {
+        yield return new WaitForSeconds(1);
+        canvasManager.InitializeCanvas();
+        Vector3 startPos = PlayerCamera.transform.localPosition;
+        float startTime = Time.time;
+        float lerpSpeed = 0.2f;
+        float baseFov = PlayerCamera.fieldOfView;
+        float targetFov = controller.fov;
+        while(PlayerCamera.transform.localPosition.magnitude > 0.01f)
+        {
+            float distanceCovered = (Time.time - startTime) * lerpSpeed;
+            PlayerCamera.transform.localPosition = Vector3.Lerp(startPos, Vector3.zero, distanceCovered / startPos.magnitude);
+            PlayerCamera.fieldOfView = Mathf.Lerp(baseFov, targetFov, distanceCovered /startPos.magnitude);
+            if (distanceCovered > startPos.magnitude * 0.5 && lerpSpeed == 0.2f) { lerpSpeed = 0.4f; }
+            yield return null;
+        }
+        PlayerCamera.transform.localPosition = Vector3.zero;
+        PlayerCamera.fieldOfView = targetFov;
+        controller.cameraCanMove = true;
+        controller.playerCanMove = true;
+    }
     private void HandleInteractions()
     {
         if (Physics.Raycast(PlayerCamera.transform.position, PlayerCamera.transform.forward, out RaycastHit hit, 4, ~notInteractable))

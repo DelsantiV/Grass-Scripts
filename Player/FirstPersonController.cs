@@ -113,7 +113,6 @@ public class FirstPersonController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
 
         // Set internal variables
-        playerCamera.fieldOfView = fov;
         originalScale = transform.localScale;
         jointOriginalPos = joint.localPosition;
         groundLayer = LayerMask.GetMask("Ground", "Default");
