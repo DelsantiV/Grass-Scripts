@@ -16,6 +16,10 @@ public class Shop : MonoBehaviour
             player = null;
             door.Unlock(openOnUnlock: false);
         }
+        else if (other.gameObject.TryGetComponent<ShopObject>(out _))
+        {
+            Destroy(other.gameObject);
+        }
     }
     private void Update()
     {
