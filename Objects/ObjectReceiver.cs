@@ -7,12 +7,13 @@ public class ObjectReceiver : MonoBehaviour, IInteractable
     [SerializeField] protected bool outlineOnLookAt = true;
     [SerializeField] private Color outlinedColor = Color.yellowGreen;
     [SerializeField] private List<Vector3> objectsPositions;
-    [SerializeField] ObjectContainer container;
+    [SerializeField] protected ObjectContainer container;
     private List<Vector3> freePositions;
+    protected List<ContainedObject> currentObjects => container.containedObjects;
     public string ObjectName => string.Empty;
     private Outline outline;
     public bool ShouldDisplayNameOnMouseOver => false;
-    private void Awake()
+    protected virtual void Awake()
     {
         if (outlineOnLookAt) outline = gameObject.GetOrAddComponent<Outline>();
         outline.OutlineColor = outlinedColor;
@@ -21,7 +22,7 @@ public class ObjectReceiver : MonoBehaviour, IInteractable
         freePositions = objectsPositions;
         if (container == null) container = gameObject.GetOrAddComponent<ObjectContainer>();
     }
-    private void Start()
+    protected virtual void Start()
     {
         foreach (ContainedObject obj in container.containedObjects)
         {
@@ -35,11 +36,11 @@ public class ObjectReceiver : MonoBehaviour, IInteractable
         if (outlineOnLookAt) outline.enabled = true;
     }
 
-    public void OnInteract(Player player)
+    public virtual void OnInteract(Player player)
     {
         if (container.isFull) return;
         InteractableObject newObj = player.TakeObject();
-        if (newObj != null)
+        if (IsObjectValid(newObj))
         {
             Vector3 position = Vector3.zero;
             if (freePositions.Count > 0) 
@@ -51,6 +52,11 @@ public class ObjectReceiver : MonoBehaviour, IInteractable
             ContainedObject containedObj = new(newObj, position, Quaternion.identity);
             container.AddContainedObject(containedObj);
         }
+    }
+    public virtual bool IsObjectValid(InteractableObject obj)
+    {
+        if (obj == null) return false;
+        return true;
     }
 
     public void OnStopLookAt(Player player)
