@@ -18,7 +18,7 @@ public class Shop : MonoBehaviour
         }
         else if (other.gameObject.TryGetComponent<ShopObject>(out _))
         {
-            Destroy(other.gameObject);
+            //Destroy(other.gameObject);
         }
     }
     private void Update()
