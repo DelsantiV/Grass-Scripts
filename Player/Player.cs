@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     private Camera PlayerCamera { get => controller.playerCamera; }
     private bool isLooking;
     private bool isInteracting;
+
+    public int money;
     private IInteractable currentInteraction;
     private LayerMask notInteractable;
     public InteractableObject currentObject { get; private set; }

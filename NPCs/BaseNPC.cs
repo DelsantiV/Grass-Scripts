@@ -110,7 +110,6 @@ public class BaseNPC : MonoBehaviour, IInteractable
         headLookAtTransform.position = new Vector3(player.transform.position.x, headLookAtTransform.position.y, player.transform.position.z);
 
 
-        Debug.Log(Vector3.Angle(transform.forward, new Vector3(player.transform.position.x - transform.position.x, headLookAtTransform.position.y, player.transform.position.z - transform.position.z)));
 
 
 

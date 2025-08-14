@@ -12,22 +12,18 @@ public class ShopNPC : BaseNPC
 
     [SerializeField] private ShopCheckout checkout;
 
-    Conversation AccessibleCheckOutConversation;
-
     private bool saidHello;
 
+    private int playerMoney;
 
-    protected override void Awake()
-    {
-        base.Awake();
-        AccessibleCheckOutConversation = CheckOutConversation.Deserialize();
-
-    }
+   
 
     public override void OnInteract(Player player)
     {
 
         conversation = SetShopConversation();
+
+        playerMoney = player.money;
 
         base.OnInteract(player);
 
@@ -64,7 +60,7 @@ public class ShopNPC : BaseNPC
         if (saidHello)
         {
 
-        if (prize == 0)
+            if (prize == 0)
             {
 
                 return NoCheckOutConversation;
@@ -83,9 +79,30 @@ public class ShopNPC : BaseNPC
         {
             return conversation;
         }
-        
+
 
     }
 
+    public void HasEnoughMoney()
+    {
+        checkout.CheckOut(out int prize);
+
+        if (playerMoney >= prize)
+        {
+            ConversationManager.Instance.SetBool("hasEnoughMoney", true);
+        }
+
+        else
+        {
+            ConversationManager.Instance.SetBool("hasEnoughMoney", false);
+        }
+
+
+
+    }
 
 }
+
+
+
+
