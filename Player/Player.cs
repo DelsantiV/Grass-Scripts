@@ -142,6 +142,11 @@ public class Player : MonoBehaviour
                 canvasManager.SetReticle(CanvasManager.ReticleType.Wash);
                 return;
             }
+            if (interactable is ObjectReceiver)
+            {
+                canvasManager.SetReticle(CanvasManager.ReticleType.Place);
+                return;
+            }
         }
         canvasManager.SetReticle(CanvasManager.ReticleType.Base);
     }

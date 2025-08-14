@@ -7,13 +7,15 @@ public class CanvasManager : MonoBehaviour
         Base,
         Grab,
         Talk,
-        Wash
+        Wash,
+        Place
     }
     [SerializeField] InteractionText interactionText;
     [SerializeField] BasicUI baseReticle;
     [SerializeField] BasicUI grabReticle;
     [SerializeField] BasicUI talkReticle;
     [SerializeField] BasicUI washReticle;
+    [SerializeField] BasicUI placeReticle;
     private BasicUI activeReticle;
     private void Awake()
     {
@@ -22,6 +24,7 @@ public class CanvasManager : MonoBehaviour
         grabReticle.Close();
         talkReticle.Close();
         washReticle.Close();
+        placeReticle.Close();
         activeReticle = baseReticle;
     }
 
@@ -35,6 +38,7 @@ public class CanvasManager : MonoBehaviour
             case ReticleType.Grab: return grabReticle;
             case ReticleType.Talk: return talkReticle;
             case ReticleType.Wash: return washReticle;
+            case ReticleType.Place: return placeReticle;
             default: return baseReticle;
         }
     }
