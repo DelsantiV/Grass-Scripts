@@ -4,14 +4,19 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class ObjectReceiver : MonoBehaviour, IInteractable
 {
+    [SerializeField] protected bool outlineOnLookAt = true;
+    [SerializeField] private Color outlinedColor = Color.yellowGreen;
     [SerializeField] private List<Vector3> objectsPositions;
     [SerializeField] ObjectContainer container;
     private List<Vector3> freePositions;
     public string ObjectName => string.Empty;
-
+    private Outline outline;
     public bool ShouldDisplayNameOnMouseOver => false;
     private void Awake()
     {
+        if (outlineOnLookAt) outline = gameObject.GetOrAddComponent<Outline>();
+        outline.OutlineColor = outlinedColor;
+        outline.enabled = false;
         freePositions = objectsPositions;
         if (container == null) container = gameObject.GetOrAddComponent<ObjectContainer>();
     }
@@ -26,7 +31,7 @@ public class ObjectReceiver : MonoBehaviour, IInteractable
 
     public void OnLookAt(Player player)
     {
-
+        if (outlineOnLookAt) outline.enabled = true;
     }
 
     public void OnInteract(Player player)
@@ -50,7 +55,7 @@ public class ObjectReceiver : MonoBehaviour, IInteractable
 
     public void OnStopLookAt(Player player)
     {
-        
+        if (outlineOnLookAt) outline.enabled = false;
     }
 
     public void OnStopInteract(Player player)
