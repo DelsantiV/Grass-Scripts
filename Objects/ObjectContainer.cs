@@ -47,6 +47,12 @@ public class ObjectContainer : MonoBehaviour
         containedObjects.Remove(obj);
         obj.iobj.OnCollected.RemoveAllListeners();
     }
+    public void DestroyAllObjects(bool resetInitialObjects = false)
+    {
+        foreach (ContainedObject obj in containedObjects) { Destroy(obj.iobj.gameObject); }
+        containedObjects = null;
+        if (resetInitialObjects) SetAllObjects();
+    }
 }
 [System.Serializable]
 public struct ContainedObject

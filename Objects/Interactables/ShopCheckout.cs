@@ -12,4 +12,8 @@ public class ShopCheckout : ObjectReceiver
         if (obj == null) return false;
         return obj.TryGetComponent<ShopObject>(out _);
     }
+    public void CheckOut()
+    {
+        container.DestroyAllObjects();
+    }
 }
