@@ -46,6 +46,7 @@ public class BaseNPC : MonoBehaviour, IInteractable
         outline.OutlineMode = Outline.Mode.OutlineVisible;
         outline.OutlineColor = Color.whiteSmoke;
         conversation = baseConversation;
+
     }
 
 
@@ -84,7 +85,7 @@ public class BaseNPC : MonoBehaviour, IInteractable
     protected virtual void EndDialog()
     {
 
-        ConversationManager.Instance.EndConversation();
+        if(ConversationManager.Instance.IsConversationActive) ConversationManager.Instance.EndConversation();
         
     }
 
@@ -143,6 +144,10 @@ public class BaseNPC : MonoBehaviour, IInteractable
     public virtual void OnLookAt(Player player)
     {
         outline.enabled = true;
+
+
+        if (canvasManager == null) canvasManager = player.CanvasManager;
+
         canvasManager.SetInteractionText(NPCSO.NPCname);
     }
 
