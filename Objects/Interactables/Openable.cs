@@ -17,7 +17,7 @@ public class Openable : InteractableObject
     public override bool ShouldDisplayNameOnMouseOver => isLocked;
     private Animator animator;
     private bool isOpen;
-    private bool canInteract;
+    public bool canInteract { get; private set; }
     private ObjectContainer container;
     private bool isContainer;
     protected override void Awake()

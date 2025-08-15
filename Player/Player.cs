@@ -175,9 +175,17 @@ public class Player : MonoBehaviour
                 }
                 else if (iobj is Openable openable)
                 {
-                    if (openable.isLocked) canvasManager.SetReticle(CanvasManager.ReticleType.Lock);
-                    else canvasManager.SetReticle(CanvasManager.ReticleType.Open);
-                    return;
+                    if (openable.isLocked)
+                    {
+                        canvasManager.SetReticle(CanvasManager.ReticleType.Lock);
+                        return;
+                    }
+                    else if (openable.canInteract) 
+                    { 
+                        canvasManager.SetReticle(CanvasManager.ReticleType.Open); 
+                        return; 
+                    }
+
                 }
             }
             if (interactable is WashableDecal)
