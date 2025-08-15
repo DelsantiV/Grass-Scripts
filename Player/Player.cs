@@ -81,6 +81,7 @@ public class Player : MonoBehaviour
                 currentInteraction = newInteraction;
                 currentInteraction.OnLookAt(this);
                 SetReticle(currentInteraction);
+                currentInteraction.NeedRefresh = false;
                 return;
             }
         }
