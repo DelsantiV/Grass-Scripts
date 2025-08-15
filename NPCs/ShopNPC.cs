@@ -91,7 +91,8 @@ public class ShopNPC : BaseNPC
         {
             ConversationManager.Instance.SetBool("hasEnoughMoney", true);
 
-            foreach (ContainedObject checkout.currentObjects in initialObjects)
+
+            foreach (ContainedObject obj  in checkout.currentObjects)
             {
 
 
