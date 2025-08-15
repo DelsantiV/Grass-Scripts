@@ -1,3 +1,4 @@
+using System.Linq;
 using DialogueEditor;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
@@ -12,18 +13,20 @@ public class ShopNPC : BaseNPC
 
     [SerializeField] private ShopCheckout checkout;
 
+    [SerializeField] private BagObject bagPrefab;
+
     private bool saidHello;
 
-    private int playerMoney;
+    private Player shopPlayer;
 
    
 
     public override void OnInteract(Player player)
     {
 
-        conversation = SetShopConversation();
+        shopPlayer = player;
 
-        playerMoney = player.money;
+        conversation = SetShopConversation();
 
         base.OnInteract(player);
 
@@ -55,12 +58,12 @@ public class ShopNPC : BaseNPC
 
     public NPCConversation SetShopConversation()
     {
-        checkout.CheckOut(out int prize);
+
 
         if (saidHello)
         {
 
-            if (prize == 0)
+            if (checkout.prize == 0)
             {
 
                 return NoCheckOutConversation;
@@ -68,7 +71,7 @@ public class ShopNPC : BaseNPC
             else
             {
 
-                canvasManager.SetOptionalText("That will be " + prize.ToString() + " $");
+                canvasManager.SetOptionalText("That will be " + checkout.prize.ToString() + " $");
 
                 return CheckOutConversation;
             }
@@ -77,27 +80,27 @@ public class ShopNPC : BaseNPC
 
         else
         {
+
             return conversation;
         }
 
 
     }
-
     public void HasEnoughMoney()
     {
-        checkout.CheckOut(out int prize);
 
-        if (playerMoney >= prize)
+
+        if (shopPlayer.money >= checkout.prize)
         {
             ConversationManager.Instance.SetBool("hasEnoughMoney", true);
 
-
-            foreach (ContainedObject obj  in checkout.currentObjects)
-            {
+            BagObject bag = Instantiate(bagPrefab, transform.position, transform.rotation);
 
 
-            }
+            bag.keyIDs = checkout.boughtInteractableObjects.ConvertAll(obj => obj.keyID);
 
+
+            shopPlayer.money = shopPlayer.money - checkout.prize;
 
 
         }

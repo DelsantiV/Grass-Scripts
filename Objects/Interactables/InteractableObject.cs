@@ -38,7 +38,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
             return objectSO.neededKeyID;
         }
     }
-    private int keyID
+    public int keyID
     {
         get
         {
