@@ -7,6 +7,7 @@ public class Grass : InteractableObject
     protected override void Interact(Player player)
     {
         base.Interact(player);
+        CanvasManager.Instance.CloseWorldMessage();
         Destroy(borders);
         Destroy(gameObject);
     }
