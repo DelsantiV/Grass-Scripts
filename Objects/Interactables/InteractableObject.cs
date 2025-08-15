@@ -131,7 +131,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     public void OnStopLookAt(Player player)
     {
-        outline.enabled = false;
+        if (outlineOnLookAt) outline.enabled = false;
         player.CanvasManager.CloseInteractionText();
     }
     public void SetUnInteractable()
