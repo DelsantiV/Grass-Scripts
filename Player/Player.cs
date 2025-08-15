@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     private bool isLooking;
     private bool isInteracting;
 
-    public int money;
+    public int money { get ; private set; }
     private IInteractable currentInteraction;
     private LayerMask notInteractable;
     public InteractableObject currentObject { get; private set; }
@@ -53,6 +53,8 @@ public class Player : MonoBehaviour
         PlayerCamera.fieldOfView = targetFov;
         controller.cameraCanMove = true;
         controller.playerCanMove = true;
+        yield return new WaitForSeconds(1);
+        canvasManager.SetWorldMessage("You've been playing this game for quite some time now. You'd better go out and touch some grass.");
     }
     private void HandleInteractions()
     {
@@ -177,5 +179,19 @@ public class Player : MonoBehaviour
             }
         }
         canvasManager.SetReticle(CanvasManager.ReticleType.Base);
+    }
+    /// <summary>
+    /// Add an amount of money. Add negative number to remove money
+    /// </summary>
+    /// <param name="amount"></param>
+    public void ChangeMoney(int amount)
+    {
+        money += amount;
+        if (money < 0)
+        {
+            Debug.Log("Problemos");
+            money = 0;
+        }
+        canvasManager.SetMoneyAmount(money);
     }
 }

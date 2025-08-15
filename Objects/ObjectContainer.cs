@@ -12,8 +12,9 @@ public class ObjectContainer : MonoBehaviour
     protected virtual void Awake()
     {
         containedObjects ??= new List<ContainedObject>();
+        containedObjects.RemoveAllNull();
         if (maxNumberOfObjects == 0) maxNumberOfObjects = containedObjects.Count;
-        if (!instantiateObjectOnlyOnOpen)
+        if (!instantiateObjectOnlyOnOpen && initialObjects.Count > 0)
         {
             SetAllObjects();
         }

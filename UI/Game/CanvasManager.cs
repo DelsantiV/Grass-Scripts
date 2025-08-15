@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class CanvasManager : MonoBehaviour
@@ -12,17 +13,20 @@ public class CanvasManager : MonoBehaviour
     }
     [SerializeField] InteractionText interactionText;
     [SerializeField] InteractionText optionalText;
+    [SerializeField] InteractionText worldMessageText;
     [SerializeField] BasicUI baseReticle;
     [SerializeField] BasicUI grabReticle;
     [SerializeField] BasicUI talkReticle;
     [SerializeField] BasicUI washReticle;
     [SerializeField] BasicUI placeReticle;
     [SerializeField] GameObject startingImage;
+    [SerializeField] TextMeshProUGUI moneyAmount;
     private BasicUI activeReticle;
     private void Awake()
     {
         CloseInteractionText();
         CloseOptionalText();
+        worldMessageText.Close();
         baseReticle.Open();
         grabReticle.Close();
         talkReticle.Close();
@@ -38,7 +42,9 @@ public class CanvasManager : MonoBehaviour
     public void SetOptionalText(string text) => optionalText.Open(text);
 
     public void CloseOptionalText() => optionalText.Close();
-
+    public void SetWorldMessage(string text) => worldMessageText.Open(text);
+    public void CloseWorldMessage(string text) => worldMessageText.Close();
+    public void SetMoneyAmount(int amount) => moneyAmount.SetText("Money: " + moneyAmount.ToString() + "$");
     public void InitializeCanvas() => Destroy(startingImage);
     private BasicUI Reticle(ReticleType reticleType)
     {

@@ -100,7 +100,7 @@ public class ShopNPC : BaseNPC
             bag.keyIDs = checkout.boughtInteractableObjects.ConvertAll(obj => obj.keyID);
 
 
-            shopPlayer.money = shopPlayer.money - checkout.prize;
+            shopPlayer.ChangeMoney(-checkout.prize);
 
 
         }

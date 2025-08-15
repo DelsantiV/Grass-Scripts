@@ -46,7 +46,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
             return objectSO.keyID;
         }
     }
-    public bool isCollectible
+    public virtual bool isCollectible
     {
         get
         {
