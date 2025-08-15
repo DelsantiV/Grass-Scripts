@@ -1,8 +1,5 @@
-using System.Linq;
 using DialogueEditor;
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
-using UnityEngine.UI;
 
 public class ShopNPC : BaseNPC
 {
@@ -14,6 +11,9 @@ public class ShopNPC : BaseNPC
     [SerializeField] private ShopCheckout checkout;
 
     [SerializeField] private BagObject bagPrefab;
+
+
+    [SerializeField] private Transform bagSpawnPosition;
 
     private bool saidHello;
 
@@ -93,7 +93,6 @@ public class ShopNPC : BaseNPC
         if (shopPlayer.money >= checkout.prize)
         {
             ConversationManager.Instance.SetBool("hasEnoughMoney", true);
-
             BagObject bag = Instantiate(bagPrefab, transform.position, transform.rotation);
 
 
@@ -101,7 +100,6 @@ public class ShopNPC : BaseNPC
 
 
             shopPlayer.ChangeMoney(-checkout.prize);
-
 
         }
 
@@ -112,6 +110,19 @@ public class ShopNPC : BaseNPC
 
 
 
+    }
+
+    public void ProceedCheckout()
+    {
+        BagObject bag = Instantiate(bagPrefab, bagSpawnPosition.position, transform.rotation);
+
+
+        bag.keyIDs = checkout.boughtInteractableObjects.ConvertAll(obj => obj.keyID);
+
+
+        shopPlayer.ChangeMoney(-checkout.prize);
+
+        checkout.CheckOut();
     }
 
 }
