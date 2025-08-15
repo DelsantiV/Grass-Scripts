@@ -11,6 +11,9 @@ public class Openable : InteractableObject
     [SerializeField] protected float autoCloseTime = 2f;
     [SerializeField] Color unlockOutlineColor = Color.aliceBlue;
     [SerializeField] Color lockedOutlineColor = Color.mediumVioletRed;
+    [SerializeField] AudioClip openAudio;
+    [SerializeField] AudioClip closeAudio;
+    private AudioSource audioSource;
     public override bool ShouldDisplayNameOnMouseOver => isLocked;
     private Animator animator;
     private bool isOpen;
@@ -22,6 +25,7 @@ public class Openable : InteractableObject
         base.Awake();
         isOpen = false;
         animator = GetComponent<Animator>();
+        audioSource = gameObject.GetOrAddComponent<AudioSource>();
         isContainer = TryGetComponent<ObjectContainer>(out container);
         outline.OutlineMode = Outline.Mode.OutlineVisible;
         TryGetComponent<Collider>(out _collider);
@@ -56,25 +60,27 @@ public class Openable : InteractableObject
     public void Open()
     {
         if (isOpen) return;
+        audioSource.PlayOneShot(openAudio);
         if (uninteractableAfterOpen) SetUnInteractable();
         isOpen = true;
         if (disableColliderWhenOpen && _collider != null) _collider.isTrigger = true;
         animator.SetTrigger("Open");   
         if (autoClose)
         {
+            isLocked = true;
             StartCoroutine(CloseInSeconds(autoCloseTime));
         }
     }
     public void Close()
     {
         if (!isOpen) return;
+        audioSource.PlayOneShot(closeAudio);
         if (disableColliderWhenOpen && _collider != null) _collider.isTrigger = false;
         isOpen = false;
         animator.SetTrigger("Close");
     }
     protected IEnumerator CloseInSeconds(float seconds)
     {
-        isLocked = true;
         yield return new WaitForSeconds(seconds);
         Close();
         isLocked = false;
