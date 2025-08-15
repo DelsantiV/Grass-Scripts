@@ -17,9 +17,9 @@ public class Openable : InteractableObject
     public override bool ShouldDisplayNameOnMouseOver => isLocked;
     private Animator animator;
     private bool isOpen;
+    private bool canInteract;
     private ObjectContainer container;
     private bool isContainer;
-    private Collider _collider;
     protected override void Awake()
     {
         base.Awake();
@@ -28,7 +28,7 @@ public class Openable : InteractableObject
         audioSource = gameObject.GetOrAddComponent<AudioSource>();
         isContainer = TryGetComponent<ObjectContainer>(out container);
         outline.OutlineMode = Outline.Mode.OutlineVisible;
-        TryGetComponent<Collider>(out _collider);
+        canInteract = true;
     }
     protected override void Start()
     {
@@ -52,7 +52,7 @@ public class Openable : InteractableObject
 
     protected override void Interact(Player player)
     {
-        if (isLocked) return;
+        if (isLocked || !canInteract) return;
         base.Interact(player);
         if (!isOpen) Open();
         else Close();
@@ -63,11 +63,11 @@ public class Openable : InteractableObject
         audioSource.PlayOneShot(openAudio);
         if (uninteractableAfterOpen) SetUnInteractable();
         isOpen = true;
-        if (disableColliderWhenOpen && _collider != null) _collider.isTrigger = true;
+        if (disableColliderWhenOpen) collider.isTrigger = true;
         animator.SetTrigger("Open");   
         if (autoClose)
         {
-            isLocked = true;
+            canInteract = false;
             NeedRefresh = true;
             StartCoroutine(CloseInSeconds(autoCloseTime));
         }
@@ -76,17 +76,14 @@ public class Openable : InteractableObject
     {
         if (!isOpen) return;
         audioSource.PlayOneShot(closeAudio);
-        if (disableColliderWhenOpen && _collider != null) _collider.isTrigger = false;
+        if (disableColliderWhenOpen) collider.isTrigger = false;
         isOpen = false;
         animator.SetTrigger("Close");
     }
     protected IEnumerator CloseInSeconds(float seconds)
     {
-        yield return new WaitForEndOfFrame();
-        NeedRefresh = false;
         yield return new WaitForSeconds(seconds);
         Close();
-        isLocked = false;
-        NeedRefresh = true;
+        canInteract = true;
     }
 }
