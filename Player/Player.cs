@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private CanvasManager canvasManager;
+    private CanvasManager canvasManager => CanvasManager.Instance;
     [SerializeField] private Transform rightHand;
     public Transform RightHand { get { return rightHand; } }
     public FirstPersonController controller;

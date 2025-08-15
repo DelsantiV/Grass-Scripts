@@ -11,7 +11,7 @@ public class BaseNPC : MonoBehaviour, IInteractable
     [SerializeField] private Rig rootRig;
     [SerializeField] private Transform headLookAtTransform;
     [SerializeField] private Transform rootLookAtTransform;
-    [SerializeField] protected CanvasManager canvasManager;
+    protected CanvasManager canvasManager => CanvasManager.Instance;
 
 
     [SerializeField] private NPCConversation baseConversation;
@@ -144,9 +144,6 @@ public class BaseNPC : MonoBehaviour, IInteractable
     public virtual void OnLookAt(Player player)
     {
         outline.enabled = true;
-
-
-        if (canvasManager == null) canvasManager = player.CanvasManager;
 
         canvasManager.SetInteractionText(NPCSO.NPCname);
     }

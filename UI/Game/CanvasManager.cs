@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class CanvasManager : MonoBehaviour
 {
+    public static CanvasManager Instance;
     public enum ReticleType
     {
         Base,
@@ -28,6 +29,7 @@ public class CanvasManager : MonoBehaviour
     private BasicUI activeReticle;
     private void Awake()
     {
+        Instance = this;
         CloseInteractionText();
         CloseOptionalText();
         worldMessageText.Close();
