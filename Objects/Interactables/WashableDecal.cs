@@ -15,6 +15,7 @@ public class WashableDecal : MonoBehaviour, IInteractable
     public string ObjectName => string.Empty;
     private new Collider collider;
     public bool ShouldDisplayNameOnMouseOver => false;
+    public bool NeedRefresh { get; set; }
     private DecalProjector projector;
     private InteractableObject soap;
     private ParticleSystem soapParticles;
@@ -29,6 +30,7 @@ public class WashableDecal : MonoBehaviour, IInteractable
             soapAnimator = GetComponentInChildren<Animator>();
         }
         soapParticles = soapAnimator.gameObject.GetComponent<ParticleSystem>();
+        NeedRefresh = false;
     }
 
     public void OnInteract(Player player)

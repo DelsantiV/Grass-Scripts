@@ -10,7 +10,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public UnityEvent OnCollected;
     public UnityEvent OnDropped;
     public UnityEvent OnInteracted;
-    private new Collider collider;
+    protected new Collider collider;
     public virtual string ObjectName
     {
         get
@@ -54,6 +54,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
             return objectSO.isCollectible;
         }
     }
+    public bool NeedRefresh { get; set; }
     protected virtual void Awake()
     {
         outline = gameObject.GetOrAddComponent<Outline>();
@@ -62,6 +63,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
         OnDropped = new();
         OnInteracted = new();
         collider = gameObject.GetComponent<Collider>();
+        NeedRefresh = false;
     }
     protected virtual void Start()
     {

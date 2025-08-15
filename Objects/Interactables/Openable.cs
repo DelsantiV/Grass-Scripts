@@ -68,6 +68,7 @@ public class Openable : InteractableObject
         if (autoClose)
         {
             isLocked = true;
+            NeedRefresh = true;
             StartCoroutine(CloseInSeconds(autoCloseTime));
         }
     }
@@ -81,8 +82,11 @@ public class Openable : InteractableObject
     }
     protected IEnumerator CloseInSeconds(float seconds)
     {
+        yield return new WaitForEndOfFrame();
+        NeedRefresh = false;
         yield return new WaitForSeconds(seconds);
         Close();
         isLocked = false;
+        NeedRefresh = true;
     }
 }

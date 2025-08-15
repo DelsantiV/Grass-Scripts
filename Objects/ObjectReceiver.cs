@@ -13,6 +13,9 @@ public class ObjectReceiver : MonoBehaviour, IInteractable
     public string ObjectName => string.Empty;
     private Outline outline;
     public bool ShouldDisplayNameOnMouseOver => false;
+
+    public bool NeedRefresh { get; set; }
+
     protected virtual void Awake()
     {
         if (outlineOnLookAt) outline = gameObject.GetOrAddComponent<Outline>();
@@ -21,6 +24,7 @@ public class ObjectReceiver : MonoBehaviour, IInteractable
         outline.enabled = false;
         freePositions = objectsPositions;
         if (container == null) container = gameObject.GetOrAddComponent<ObjectContainer>();
+        NeedRefresh = false;
     }
     protected virtual void Start()
     {

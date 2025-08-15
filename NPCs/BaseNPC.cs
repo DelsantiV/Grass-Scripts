@@ -25,7 +25,7 @@ public class BaseNPC : MonoBehaviour, IInteractable
     protected Animator animator;
     private Outline outline;
     public string ObjectName => NPCSO.NPCname;
-
+    public bool NeedRefresh { get; set; } 
 
     private bool isLookAtPosition;
 
@@ -46,7 +46,7 @@ public class BaseNPC : MonoBehaviour, IInteractable
         outline.OutlineMode = Outline.Mode.OutlineVisible;
         outline.OutlineColor = Color.whiteSmoke;
         conversation = baseConversation;
-
+        NeedRefresh = false;
     }
 
 

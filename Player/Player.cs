@@ -54,6 +54,7 @@ public class Player : MonoBehaviour
         PlayerCamera.fieldOfView = targetFov;
         controller.cameraCanMove = true;
         controller.playerCanMove = true;
+        AudioManager.Instance.StartGameMusic();
         yield return new WaitForSeconds(1);
         canvasManager.SetWorldMessage("You've been playing this game for quite some time now. You'd better go out and touch some grass.");
     }
@@ -66,9 +67,13 @@ public class Player : MonoBehaviour
             if (selectionTransform.TryGetComponent<IInteractable>(out IInteractable newInteraction))
             {
                 isLooking = true;
-                if (newInteraction == currentInteraction) return;
+                
+                if (newInteraction == currentInteraction)
+                {
+                    if (!currentInteraction.NeedRefresh) return;
+                }
                 // new interaction is different from current
-                if (currentInteraction != null)
+                if (currentInteraction != null && newInteraction != currentInteraction)
                 {
                     currentInteraction.OnStopLookAt(this);
                     if (isInteracting) currentInteraction.OnStopInteract(this);
