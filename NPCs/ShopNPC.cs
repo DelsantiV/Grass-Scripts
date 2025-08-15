@@ -90,6 +90,15 @@ public class ShopNPC : BaseNPC
         if (playerMoney >= prize)
         {
             ConversationManager.Instance.SetBool("hasEnoughMoney", true);
+
+            foreach (ContainedObject checkout.currentObjects in initialObjects)
+            {
+
+
+            }
+
+
+
         }
 
         else

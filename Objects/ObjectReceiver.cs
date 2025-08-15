@@ -9,7 +9,7 @@ public class ObjectReceiver : MonoBehaviour, IInteractable
     [SerializeField] private List<Vector3> objectsPositions;
     [SerializeField] protected ObjectContainer container;
     private List<Vector3> freePositions;
-    protected List<ContainedObject> currentObjects => container.containedObjects;
+    public List<ContainedObject> currentObjects => container.containedObjects;
     public string ObjectName => string.Empty;
     private Outline outline;
     public bool ShouldDisplayNameOnMouseOver => false;
