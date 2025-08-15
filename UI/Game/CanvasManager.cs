@@ -9,7 +9,9 @@ public class CanvasManager : MonoBehaviour
         Grab,
         Talk,
         Wash,
-        Place
+        Place,
+        Lock,
+        Open
     }
     [SerializeField] InteractionText interactionText;
     [SerializeField] InteractionText optionalText;
@@ -19,6 +21,8 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] BasicUI talkReticle;
     [SerializeField] BasicUI washReticle;
     [SerializeField] BasicUI placeReticle;
+    [SerializeField] BasicUI lockReticle;
+    [SerializeField] BasicUI openReticle;
     [SerializeField] GameObject startingImage;
     [SerializeField] TextMeshProUGUI moneyAmount;
     private BasicUI activeReticle;
@@ -32,6 +36,8 @@ public class CanvasManager : MonoBehaviour
         talkReticle.Close();
         washReticle.Close();
         placeReticle.Close();
+        lockReticle.Close();
+        openReticle.Close();
         activeReticle = baseReticle;
         startingImage.SetActive(true);
     }
@@ -54,6 +60,8 @@ public class CanvasManager : MonoBehaviour
             case ReticleType.Talk: return talkReticle;
             case ReticleType.Wash: return washReticle;
             case ReticleType.Place: return placeReticle;
+            case ReticleType.Lock: return lockReticle;
+            case ReticleType.Open: return openReticle;
             default: return baseReticle;
         }
     }
