@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
     }
     private IEnumerator InitializePlayer()
     {
+        yield return new WaitForEndOfFrame();
         yield return new WaitForSeconds(1);
         canvasManager.InitializeCanvas();
         Vector3 startPos = PlayerCamera.transform.localPosition;
@@ -159,11 +160,17 @@ public class Player : MonoBehaviour
                 canvasManager.SetReticle(CanvasManager.ReticleType.Talk);
                 return;
             }
-            if (interactable is InteractableObject)
+            if (interactable is InteractableObject iobj)
             {
-                if ((interactable as InteractableObject).isCollectible)
+                if (iobj.isCollectible)
                 {
                     canvasManager.SetReticle(CanvasManager.ReticleType.Grab);
+                    return;
+                }
+                else if (iobj is Openable openable)
+                {
+                    if (openable.isLocked) canvasManager.SetReticle(CanvasManager.ReticleType.Lock);
+                    else canvasManager.SetReticle(CanvasManager.ReticleType.Open);
                     return;
                 }
             }
