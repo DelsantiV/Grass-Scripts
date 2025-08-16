@@ -54,7 +54,7 @@ public class CanvasManager : MonoBehaviour
     public void CloseOptionalText() => optionalText.Close();
     public void SetWorldMessage(string text) => worldMessageText.Open(text);
     public void CloseWorldMessage() => worldMessageText.Close();
-    public void SetMoneyAmount(int amount) => moneyAmount.SetText("Money: " + moneyAmount.ToString() + "$");
+    public void SetMoneyAmount(int amount) => moneyAmount.SetText("Money: " + amount.ToString() + "$");
     public void InitializeCanvas() => Destroy(startingImage);
     private BasicUI Reticle(ReticleType reticleType)
     {
