@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
         StopMovement(true, true, true);
         StartCoroutine(InitializePlayer());
         CanvasManager.Instance.worldMessageButton.onClick.AddListener(() => AllowMovement(allowPlayer: true, allowCamera: true, lockCursor: true));
+        ChangeMoney(100);
     }
     private void Update()
     {

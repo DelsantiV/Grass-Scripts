@@ -123,6 +123,10 @@ public class ShopNPC : BaseNPC
         shopPlayer.ChangeMoney(-checkout.prize);
 
         checkout.CheckOut();
+
+        saidHello = false;
+
+        conversation = secondMeetingConversation;
     }
 
 }

@@ -12,8 +12,8 @@ public class BaseNPC : MonoBehaviour, IInteractable
     [SerializeField] private Transform headLookAtTransform;
     [SerializeField] private Transform rootLookAtTransform;
     protected CanvasManager canvasManager => CanvasManager.Instance;
-    [SerializeField] private NPCConversation baseConversation;
-    [SerializeField] private NPCConversation secondMeetingConversation;
+    [SerializeField] protected NPCConversation baseConversation;
+    [SerializeField] protected NPCConversation secondMeetingConversation;
     [SerializeField] protected NPCConversation conversation;
 
     public float speed;
@@ -57,6 +57,7 @@ public class BaseNPC : MonoBehaviour, IInteractable
     }
 
 
+    
 
     protected virtual void EndDialog(Player player)
     {

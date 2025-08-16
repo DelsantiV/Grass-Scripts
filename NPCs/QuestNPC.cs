@@ -1,3 +1,4 @@
+using System;
 using DialogueEditor;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
@@ -12,6 +13,9 @@ public class QuestNPC : BaseNPC
     [SerializeField] private NPCConversation questAcceptedConversation;
 
     [SerializeField] private NPCConversation questCompletedConversation;
+
+
+    [SerializeField] private Transform spawnQuestObjectPosition;
 
 
 
@@ -34,8 +38,10 @@ public class QuestNPC : BaseNPC
 
         if (quest.spawnQuestObject)
         {
-            Instantiate(quest.questObject.gameObject, quest.questObjectSpawnPosition, quest.questObjectSpawnRotation);
-
+            foreach (InteractableObject questobj in quest.questObjects)
+            {
+                Instantiate(questobj.gameObject, quest.questObjectSpawnPosition, quest.questObjectSpawnRotation);
+            }
         }
 
 
@@ -50,14 +56,36 @@ public class QuestNPC : BaseNPC
 
     }
 
+    private bool CheckQuestObjects(Player player)
+    {
+        foreach(InteractableObject questobj in quest.questObjects)
+        {
+            if (!player.IsCurrentObjectKey(questobj.objectSO.keyID)) return false;
+
+        }
+
+        return true;
+
+    }
+
     public void VerifyObject(Player player)
     {
 
         if (player.currentObject != null)
         {
-            if (player.IsCurrentObjectKey(quest.questObject.objectSO.keyID))
+
+            if (CheckQuestObjects(player))
             {
 
+
+                InteractableObject questobj = player.TakeObject();
+
+                questobj.transform.parent = spawnQuestObjectPosition;
+
+
+                questobj.transform.SetLocalPositionAndRotation(Vector3.zero,Quaternion.identity);
+
+                questobj.isCollectible = false;
 
                 QuestCompleted();
 
