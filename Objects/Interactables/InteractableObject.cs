@@ -138,6 +138,6 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public void SetUnInteractable()
     {
         outline.enabled = false;
-        enabled = false;
+        Destroy(this);
     }
 }
