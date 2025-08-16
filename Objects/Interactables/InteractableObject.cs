@@ -126,13 +126,13 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     public void OnLookAt(Player player)
     {
-        if (outlineOnLookAt) outline.enabled = true;
+        if (outlineOnLookAt && outline != null) outline.enabled = true;
         if (ShouldDisplayNameOnMouseOver) player.CanvasManager.SetInteractionText(ObjectName);
     }
 
     public void OnStopLookAt(Player player)
     {
-        if (outlineOnLookAt) outline.enabled = false;
+        if (outlineOnLookAt && outline != null) outline.enabled = false;
         player.CanvasManager.CloseInteractionText();
     }
     public void SetUnInteractable()
