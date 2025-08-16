@@ -164,8 +164,13 @@ public class EntityMover : MonoBehaviour
         isStopped = true;
         agent.enabled = false;
         enabled = false;
-        playerDetecter.EnableDetecter(false);
+        if (shouldFleePlayer) playerDetecter.EnableDetecter(false);
         animatorHandler.SetAnimationSpeed(0f, false);
+    }
+    public void ResumeMovement()
+    {
+        InitializeBehaviour();
+        if (shouldFleePlayer) playerDetecter.EnableDetecter(true);
     }
     private void OnPlayerDetected()
     {
