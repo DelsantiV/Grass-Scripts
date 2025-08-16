@@ -4,7 +4,7 @@ public class SpawnManager : MonoBehaviour
 {
     public GameObject[] obstacleprefabArray;
     public GameObject[] hardObstaclesPrefabsArray;
-    private Vector3 spawnPos = new Vector3(25, 0, 0);
+    private Vector3 spawnPos = new Vector3(70, 0, 0);
     private float startDelay = 4.0f;
     private float timeInterval = 2.0f;
     private PlayerController playerControllerScript;
@@ -31,15 +31,12 @@ public class SpawnManager : MonoBehaviour
         {
             if (gameManager.score > 100 && (Random.Range(0f,1f) > ((600 - (float) gameManager.score) / 500)))
             {
-                Debug.Log("hard");
                 int hardObstacleIndex = Random.Range(0, hardObstaclesPrefabsArray.Length);
                 Instantiate(hardObstaclesPrefabsArray[hardObstacleIndex], spawnPos, obstacleprefabArray[hardObstacleIndex].transform.rotation);
                 return;
             }
             int obstacleIndex = Random.Range(0, obstacleprefabArray.Length);
             Instantiate(obstacleprefabArray[obstacleIndex], spawnPos, obstacleprefabArray[obstacleIndex].transform.rotation);
-            Debug.Log("ez");
-
         }
     }
 }
