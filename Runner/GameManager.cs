@@ -1,8 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 public class GameManager : MonoBehaviour
@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public ReplayScreen replayScreen;
     public GameObject tutorialPanel;
+    public Button startButton;
     public decimal notScore;
     public decimal score;
     private int numberOfGames;
@@ -27,7 +28,9 @@ public class GameManager : MonoBehaviour
         playerControllerScript.gameOver = true;
         playerControllerScript.OnGameOver.AddListener(GameOver);
         replayScreen.OnReplay.AddListener(Replay);
-        StartCoroutine(PlayIntro());
+        startButton.onClick.AddListener(() => StartCoroutine(PlayIntro()));
+        playerControllerScript.GetComponent<Animator>().SetFloat("Speed_f", 0);
+        tutorialPanel.SetActive(true);
     }
 
     // Update is called once per frame
@@ -46,28 +49,27 @@ public class GameManager : MonoBehaviour
             }
             if (decimal.Round(notScore / 20) > 300 && score < 300) UpdateSpeed(30);
             score = decimal.Round(notScore / 20);
-            scoreText.SetText("Score :" + score);
+            scoreText.SetText("Score :  " + score);
         }
     }
 
     IEnumerator PlayIntro()
     {
-        tutorialPanel.SetActive(true);
-        playerControllerScript.GetComponent<Animator>().SetFloat("Speed_f", 0);
-        yield return new WaitForSeconds(7);
-        playerControllerScript.GetComponent<Animator>().SetFloat("Speed_f", 1);
         tutorialPanel.SetActive(false);
+        playerControllerScript.GetComponent<Animator>().SetFloat("Speed_f", 0);
+        yield return new WaitForSeconds(2);
+        playerControllerScript.GetComponent<Animator>().SetFloat("Speed_f", 1);
         Vector3 startPos = playerControllerScript.transform.position;
         Vector3 cinematicEnd = startingPoint.position;
         float cinematicDistance = cinematicEnd.x - startPos.x;
         float startTime = Time.time;
         float distanceCovered = 0;
-        playerControllerScript.GetComponent<Animator>().SetFloat("Speed_Multiplier",0.5f);
 
         while (distanceCovered < cinematicDistance)
         {
             distanceCovered = (Time.time - startTime) * lerpSpeed;
             playerControllerScript.transform.position = Vector3.Lerp(startPos, cinematicEnd, distanceCovered / cinematicDistance);
+            playerControllerScript.GetComponent<Animator>().SetFloat("Speed_Multiplier", distanceCovered / cinematicDistance);
             yield return null;
         }
         playerControllerScript.GetComponent<Animator>().SetFloat("Speed_Multiplier", 1.0f);
@@ -88,7 +90,7 @@ public class GameManager : MonoBehaviour
         score = 0;
         notScore = 0;
         scoreText.SetText("Score :" + score);
-        StartCoroutine(PlayIntro());
+        tutorialPanel.SetActive(true);
     }
     private IEnumerator StopGame(bool replay)
     {
@@ -98,19 +100,19 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            replayScreen.GoTouchGrass();
+            replayScreen.GoTouchGrass(score >= 500);
         }
         yield return new WaitForSeconds(3);
         replayScreen.gameObject.SetActive(true);
         if (!replay)
         {
-            yield return new WaitForSeconds(1.5f);
+            Physics.gravity /= playerControllerScript.gravityModifier;
             SceneManager.LoadSceneAsync("GameScene");
         }
     }
     private void GameOver()
     {
         numberOfGames++;
-        StartCoroutine(StopGame(score < 500 && numberOfGames < 10));
+        StartCoroutine(StopGame(score < 500 && numberOfGames < 6));
     }
 }
