@@ -8,7 +8,7 @@ public class Grass : InteractableObject
     {
         base.Interact(player);
         AudioManager.Instance.GoToNextMusic();
-        player.SetWorldMessage("It's good to feel some grass ! You had even forgotten what the green color was like... Your soul was lost in the virtual world. Touching grass makes you want to help people around");
+        player.SetWorldMessage("It's good to feel some grass ! You had even forgotten what the green color was like... Your soul was lost in the virtual world. Touching grass makes you want to help people around. Walk around and help who you can !");
         Destroy(borders);
         Destroy(gameObject);
     }
