@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -56,7 +54,7 @@ public class Player : MonoBehaviour
         PlayerCamera.fieldOfView = targetFov;
         AudioManager.Instance.StartGameMusic();
         yield return new WaitForSeconds(1);
-        canvasManager.SetWorldMessage("You've been playing this game for quite some time now. You'd better go out and touch some grass.");
+        canvasManager.SetWorldMessage("You've been playing this game for quite some time now. You'd better go out and touch some grass. But to stay focused on the game, you've locked yourself in. Find the keys and escape your own house !");
     }
     public void StopMovement(bool stopPlayer = true, bool stopCamera = false, bool unlockCursor = false)
     {
@@ -228,7 +226,6 @@ public class Player : MonoBehaviour
         money += amount;
         if (money < 0)
         {
-            Debug.Log("Problemos");
             money = 0;
         }
         canvasManager.SetMoneyAmount(money);
