@@ -8,5 +8,6 @@ public class Money : InteractableObject
     {
         OnCollected.Invoke();
         player.ChangeMoney(moneyAmount);
+        Destroy(gameObject);
     }
 }
