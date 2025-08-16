@@ -19,11 +19,13 @@ public class EntityMover : MonoBehaviour
     [SerializeField] private float fleeDistance = 10f;
     [SerializeField] private float fleeUpdateTimeInterval = 0.2f;
     [SerializeField] private PlayerDetecter playerDetecter;
+    [SerializeField] private AudioClip audioClip;
     private NavMeshAgent agent;
     private Vector3 origin;
     private bool isOnReturn;
     private bool hasArrived;
     private float currentSpeed;
+    private AudioSource audioSource;
     private bool isStopped { get => agent.isStopped; set => agent.isStopped = value; }
     private bool isPaused;
     public UnityEvent OnDestinationReached;
@@ -36,6 +38,7 @@ public class EntityMover : MonoBehaviour
         origin = transform.position;
         OnDestinationReached = new();
         InitializeBehaviour();
+        if (audioClip != null) audioSource = gameObject.GetOrAddComponent<AudioSource>();
     }
     protected virtual void Start()
     {
@@ -179,6 +182,7 @@ public class EntityMover : MonoBehaviour
 
     private void FleePlayer()
     {
+        if (audioClip != null) audioSource.PlayOneShot(audioClip);
         SetRunning(true);
         agent.autoBraking = false;
         isPaused = false;
