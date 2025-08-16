@@ -11,6 +11,7 @@ public class Shop : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
+        Debug.Log(other.gameObject.name);
         if (other.gameObject.CompareTag("Player"))
         {
             player = null;
@@ -18,7 +19,7 @@ public class Shop : MonoBehaviour
         }
         else if (other.gameObject.TryGetComponent<ShopObject>(out _))
         {
-            //Destroy(other.gameObject);
+            if (player == null) Destroy(other.gameObject);
         }
     }
     private void Update()
@@ -34,7 +35,6 @@ public class Shop : MonoBehaviour
                 }
             }
             door.Unlock(openOnUnlock: false);
-            Debug.Log(door.isLocked);
         }
     }
     public void UnlockDoor()
