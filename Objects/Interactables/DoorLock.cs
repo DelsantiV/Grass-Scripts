@@ -5,6 +5,7 @@ public class DoorLock : InteractableObject
     [SerializeField] private Openable door;
     [SerializeField] Vector3 keyPosition;
     [SerializeField] Vector3 keyRotation;
+    [SerializeField] private bool takeKey = true;
 
     protected override void Awake()
     {
@@ -17,7 +18,7 @@ public class DoorLock : InteractableObject
     protected override void Interact(Player player)
     {
         base.Interact(player);
-        PutKeyInLock(player.TakeObject());
+        if (takeKey) PutKeyInLock(player.TakeObject());
         door.Unlock();
         SetUnInteractable();
     }
