@@ -172,7 +172,7 @@ public class EntityMover : MonoBehaviour
         InitializeBehaviour();
         if (shouldFleePlayer) playerDetecter.EnableDetecter(true);
     }
-    private void OnPlayerDetected()
+    protected virtual void OnPlayerDetected()
     {
         FleePlayer();
     }

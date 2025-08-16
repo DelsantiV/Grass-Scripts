@@ -13,7 +13,17 @@ public class EntityMoverCollectible : EntityMover
     protected override void Start()
     {
         base.Start();
-        interactableObject.OnCollected.AddListener(StopMovement);
+        interactableObject.OnCollected.AddListener(OnCollected);
         interactableObject.OnDropped.AddListener(ResumeMovement);
+    }
+    private void OnCollected()
+    {
+        StopMovement();
+        AudioManager.Instance.StartGameMusic();
+    }
+    protected override void OnPlayerDetected()
+    {
+        base.OnPlayerDetected();
+        AudioManager.Instance.SwitchToQuest("Pursuit", time: 60);
     }
 }
