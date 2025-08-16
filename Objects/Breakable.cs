@@ -12,7 +12,11 @@ public class Breakable : MonoBehaviour
     private void Awake()
     {
         if ( _particleSystem == null ) TryGetComponent<ParticleSystem>(out _particleSystem);
-        if (audioClip != null) audioSource = gameObject.GetOrAddComponent<AudioSource>();
+        if (audioClip != null)
+        {
+            audioSource = gameObject.GetOrAddComponent<AudioSource>();
+            audioSource.volume = 0.3f;
+        }
     }
     private void Start()
     {
