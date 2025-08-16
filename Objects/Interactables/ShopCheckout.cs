@@ -1,9 +1,10 @@
-
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
 public class ShopCheckout : ObjectReceiver
 {
+    [SerializeField] private Openable barrier;
     public List<ShopObject> boughtObjects => currentObjects.ConvertAll(obj => obj.iobj.gameObject.GetComponent<ShopObject>());
     public List<InteractableObject> boughtInteractableObjects => currentObjects.ConvertAll(obj => obj.iobj.gameObject.GetComponent<InteractableObject>());
     public int prize => boughtObjects.Sum(obj => obj.prize);
@@ -15,5 +16,6 @@ public class ShopCheckout : ObjectReceiver
     public void CheckOut()
     {
         container.DestroyAllObjects();
+        barrier.Open();
     }
 }
