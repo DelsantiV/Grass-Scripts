@@ -5,6 +5,7 @@ public class Breakable : MonoBehaviour
     [SerializeField] ParticleSystem _particleSystem;
     [SerializeField] InteractableObject _breaker;
     [SerializeField] AudioClip audioClip;
+    [SerializeField] string worldMessage;
     private AudioSource audioSource;
     private bool broke = false;
 
@@ -30,6 +31,7 @@ public class Breakable : MonoBehaviour
         if (_particleSystem != null) { _particleSystem.Play(); }
         broke = true;
         if (audioClip != null) audioSource.PlayOneShot(audioClip);
+        if (worldMessage != string.Empty) { FindFirstObjectByType<Player>().SetWorldMessage(worldMessage); }
     }
 
     private void OnTriggerEnter(Collider other)
