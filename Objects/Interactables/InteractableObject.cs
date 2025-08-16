@@ -56,7 +56,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
     protected virtual void Awake()
     {
         outline = gameObject.GetOrAddComponent<Outline>();
-        canCollect = objectSO.isCollectible;
+        if (objectSO == null) canCollect = objectSO.isCollectible;
         outline.OutlineColor = outlinedColor;
         OnCollected = new();
         OnDropped = new();
