@@ -60,7 +60,7 @@ public class Openable : InteractableObject
     public void Open()
     {
         if (isOpen) return;
-        audioSource.PlayOneShot(openAudio);
+        if (openAudio != null) audioSource.PlayOneShot(openAudio);
         if (uninteractableAfterOpen) SetUnInteractable();
         isOpen = true;
         if (disableColliderWhenOpen) collider.isTrigger = true;
@@ -75,7 +75,7 @@ public class Openable : InteractableObject
     public void Close()
     {
         if (!isOpen) return;
-        audioSource.PlayOneShot(closeAudio);
+        if (closeAudio != null) audioSource.PlayOneShot(closeAudio);
         if (disableColliderWhenOpen) collider.isTrigger = false;
         isOpen = false;
         animator.SetTrigger("Close");
