@@ -46,18 +46,17 @@ public class InteractableObject : MonoBehaviour, IInteractable
             return objectSO.keyID;
         }
     }
+    protected bool canCollect;
     public virtual bool isCollectible
     {
-        get
-        {
-            if (objectSO == null) return false; 
-            return objectSO.isCollectible;
-        }
+        get => canCollect;
+        set => canCollect = value;
     }
     public bool NeedRefresh { get; set; }
     protected virtual void Awake()
     {
         outline = gameObject.GetOrAddComponent<Outline>();
+        canCollect = objectSO.isCollectible;
         outline.OutlineColor = outlinedColor;
         OnCollected = new();
         OnDropped = new();
@@ -139,6 +138,6 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public void SetUnInteractable()
     {
         outline.enabled = false;
-        Destroy(this);
+        enabled = false;
     }
 }
