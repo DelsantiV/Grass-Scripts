@@ -16,7 +16,11 @@ public class BaseNPC : MonoBehaviour, IInteractable
     [SerializeField] protected NPCConversation secondMeetingConversation;
     [SerializeField] protected NPCConversation conversation;
 
+    [SerializeField] protected InteractableObject rewardObject;
+
     public float speed;
+
+    private Player player;
     protected Animator animator;
     private Outline outline;
     public string ObjectName => NPCSO.NPCname;
@@ -86,6 +90,8 @@ public class BaseNPC : MonoBehaviour, IInteractable
     public virtual void OnInteract(Player player)
     {
 
+        this.player = player;
+
         canvasManager.CloseInteractionText();
         
 
@@ -121,6 +127,22 @@ public class BaseNPC : MonoBehaviour, IInteractable
     public virtual void OnStopInteract(Player player)
     {
 
+
+    }
+
+    public void LockCursor()
+    {
+
+        player.SetCursorLockMode(true);
+    }
+
+
+    public void GiveRewardObject()
+    {
+
+        InteractableObject obj = Instantiate(rewardObject);
+
+        obj.TryCollectObject(player);
 
     }
 
