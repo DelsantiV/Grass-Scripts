@@ -118,16 +118,6 @@ public class FirstPersonController : MonoBehaviour
         groundLayer = LayerMask.GetMask("Ground", "Default");
     }
 
-    void Start()
-    {
-        if(lockCursor)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-    }
-
-    float camRotation;
-
     private void Update()
     {
         #region Camera
