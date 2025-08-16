@@ -12,6 +12,7 @@ public class WashableDecal : MonoBehaviour, IInteractable
     [SerializeField] private float washCooldown = 1f;
     [SerializeField] private float washStep = 0.25f;
     [SerializeField] private Animator soapAnimator;
+    [SerializeField] private string worldMessage;
     public string ObjectName => string.Empty;
     private new Collider collider;
     public bool ShouldDisplayNameOnMouseOver => false;
@@ -76,6 +77,7 @@ public class WashableDecal : MonoBehaviour, IInteractable
 
         if (projector.fadeFactor == 0f)
         {
+            if (worldMessage != string.Empty) CanvasManager.Instance.SetWorldMessage(worldMessage);
             enabled = false;
             projector.enabled = false;
             Destroy(gameObject);
