@@ -14,8 +14,9 @@ public class BagObject : InteractableObject
             {
                 keyIDs.AddRange(bag.keyIDs);
                 Destroy(bag.gameObject);
+                return;
             }
         }
-        return;
+        base.OnInteract(player);
     }
 }
