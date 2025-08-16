@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -20,13 +21,13 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<FirstPersonController>();
-        controller.cameraCanMove = false;
-        controller.playerCanMove = false;
         notInteractable = LayerMask.GetMask("Ground", "Player");
     }
     private void Start()
     {
+        StopMovement(true, true, true);
         StartCoroutine(InitializePlayer());
+        CanvasManager.Instance.worldMessageButton.onClick.AddListener(() => AllowMovement(allowPlayer: true, allowCamera: true, lockCursor: true));
     }
     private void Update()
     {
@@ -52,11 +53,21 @@ public class Player : MonoBehaviour
         }
         PlayerCamera.transform.localPosition = Vector3.zero;
         PlayerCamera.fieldOfView = targetFov;
-        controller.cameraCanMove = true;
-        controller.playerCanMove = true;
         AudioManager.Instance.StartGameMusic();
         yield return new WaitForSeconds(1);
         canvasManager.SetWorldMessage("You've been playing this game for quite some time now. You'd better go out and touch some grass.");
+    }
+    public void StopMovement(bool stopPlayer = true, bool stopCamera = false, bool unlockCursor = false)
+    {
+        if (stopPlayer) controller.playerCanMove = false;
+        if (stopCamera) controller.cameraCanMove = false;
+        if(unlockCursor) Cursor.lockState = CursorLockMode.None;
+    }
+    public void AllowMovement(bool allowPlayer = true, bool allowCamera = true, bool lockCursor = true)
+    {
+        if (allowPlayer) controller.playerCanMove = true;
+        if (allowCamera) controller.cameraCanMove = true;
+        if (lockCursor) Cursor.lockState= CursorLockMode.Locked;
     }
     private void HandleInteractions()
     {
@@ -200,6 +211,11 @@ public class Player : MonoBehaviour
             }
         }
         canvasManager.SetReticle(CanvasManager.ReticleType.Base);
+    }
+    public void SetWorldMessage(string text)
+    {
+        CanvasManager.Instance.SetWorldMessage(text);
+        StopMovement(true, true, true);
     }
     /// <summary>
     /// Add an amount of money. Add negative number to remove money
