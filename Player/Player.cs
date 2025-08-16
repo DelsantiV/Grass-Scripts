@@ -151,6 +151,7 @@ public class Player : MonoBehaviour
     public bool IsCurrentObjectKey(int keyID)
     {
         if (currentObject == null) return false;
+        if (currentObject is BagObject bag) return bag.keyIDs.Contains(keyID);
         if (currentObject.objectSO.keyID == keyID) return true;
         return false;
     }
