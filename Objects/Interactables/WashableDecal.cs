@@ -77,7 +77,7 @@ public class WashableDecal : MonoBehaviour, IInteractable
 
         if (projector.fadeFactor == 0f)
         {
-            if (worldMessage != string.Empty) CanvasManager.Instance.SetWorldMessage(worldMessage);
+            if (worldMessage != string.Empty) player.SetWorldMessage(worldMessage);
             enabled = false;
             projector.enabled = false;
             Destroy(gameObject);
