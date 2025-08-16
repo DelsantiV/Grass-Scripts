@@ -50,7 +50,7 @@ public class ObjectContainer : MonoBehaviour
     public void DestroyAllObjects(bool resetInitialObjects = false)
     {
         foreach (ContainedObject obj in containedObjects) { Destroy(obj.iobj.gameObject); }
-        containedObjects = null;
+        containedObjects.Clear();
         if (resetInitialObjects) SetAllObjects();
     }
 }
