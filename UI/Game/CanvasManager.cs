@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CanvasManager : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] InteractionText interactionText;
     [SerializeField] InteractionText optionalText;
     [SerializeField] InteractionText worldMessageText;
+    public Button worldMessageButton;
     [SerializeField] BasicUI baseReticle;
     [SerializeField] BasicUI grabReticle;
     [SerializeField] BasicUI talkReticle;
@@ -56,16 +58,16 @@ public class CanvasManager : MonoBehaviour
     public void InitializeCanvas() => Destroy(startingImage);
     private BasicUI Reticle(ReticleType reticleType)
     {
-        switch (reticleType)
+        return reticleType switch
         {
-            case ReticleType.Grab: return grabReticle;
-            case ReticleType.Talk: return talkReticle;
-            case ReticleType.Wash: return washReticle;
-            case ReticleType.Place: return placeReticle;
-            case ReticleType.Lock: return lockReticle;
-            case ReticleType.Open: return openReticle;
-            default: return baseReticle;
-        }
+            ReticleType.Grab => grabReticle,
+            ReticleType.Talk => talkReticle,
+            ReticleType.Wash => washReticle,
+            ReticleType.Place => placeReticle,
+            ReticleType.Lock => lockReticle,
+            ReticleType.Open => openReticle,
+            _ => baseReticle,
+        };
     }
     public void SetReticle(ReticleType reticleType)
     {
