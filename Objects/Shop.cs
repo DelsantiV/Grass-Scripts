@@ -3,28 +3,33 @@ using UnityEngine;
 public class Shop : MonoBehaviour
 {
     [SerializeField] Openable door;
+    [SerializeField] Openable checkoutBarrier;
     private Player player;
-    private bool shouldLockDoor = true;
+    private bool isFirstTime = true;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player")) player = other.GetComponent<Player>();
+        if (other.gameObject.CompareTag("Player"))
+        {
+            checkoutBarrier.Close();
+            player = other.GetComponent<Player>();
+            if (isFirstTime)
+            {
+                isFirstTime = false;
+                player.SetWorldMessage("In the shop, you can buy everything you need ! A fresh orange juice, nice vegetables or a braand new deadly chainsaw ! Put everything on the treadmill and talk to Sandrine to buy objects ! DO NOT TRY TO STEAL !");
+            }
+        }
     }
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log(other.gameObject.name);
         if (other.gameObject.CompareTag("Player"))
         {
             player = null;
             door.Unlock(openOnUnlock: false);
         }
-        else if (other.gameObject.TryGetComponent<ShopObject>(out _))
-        {
-            if (player == null) Destroy(other.gameObject);
-        }
     }
     private void Update()
     {
-        if (player != null && shouldLockDoor)
+        if (player != null)
         {
             if (player.currentObject != null)
             {
@@ -36,10 +41,5 @@ public class Shop : MonoBehaviour
             }
             door.Unlock(openOnUnlock: false);
         }
-    }
-    public void UnlockDoor()
-    {
-        shouldLockDoor = false;
-        door.Unlock(openOnUnlock: false);
     }
 }
