@@ -53,6 +53,7 @@ public class AudioManager : MonoBehaviour
         QuestMusic questMusic = musicSO.questMusics.ToList().Find(m => m.title == music);
         if (questMusic != null)
         {
+            if (questMusic.audioClip == audioSource.clip) return;
             audioSource.clip = questMusic.audioClip;
             audioSource.Play();
             StartCoroutine(BackToMainMusic(time));
