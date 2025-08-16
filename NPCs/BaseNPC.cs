@@ -12,13 +12,8 @@ public class BaseNPC : MonoBehaviour, IInteractable
     [SerializeField] private Transform headLookAtTransform;
     [SerializeField] private Transform rootLookAtTransform;
     protected CanvasManager canvasManager => CanvasManager.Instance;
-
-
     [SerializeField] private NPCConversation baseConversation;
-
     [SerializeField] private NPCConversation secondMeetingConversation;
-
-
     [SerializeField] protected NPCConversation conversation;
 
     public float speed;
@@ -26,19 +21,9 @@ public class BaseNPC : MonoBehaviour, IInteractable
     private Outline outline;
     public string ObjectName => NPCSO.NPCname;
     public bool NeedRefresh { get; set; } 
-
     private bool isLookAtPosition;
-
     private bool isRootLookAtPosition;
-
-
-
     public bool ShouldDisplayNameOnMouseOver => true;
-
-
-
-
-
 
     protected virtual void Awake()
     {
@@ -151,13 +136,9 @@ public class BaseNPC : MonoBehaviour, IInteractable
     public virtual void OnStopLookAt(Player player)
     {
         outline.enabled = false;
-
         isLookAtPosition = false;
-
         isRootLookAtPosition = false;
-
         EndDialog(player);
-
         canvasManager.CloseInteractionText();
 
     }
@@ -196,8 +177,5 @@ public class BaseNPC : MonoBehaviour, IInteractable
     {
         transform.position += transform.forward * speed * Time.deltaTime;
     }
-  
-
-
    
 }
