@@ -89,43 +89,16 @@ public class ShopNPC : BaseNPC
     public void HasEnoughMoney()
     {
 
-
-        if (shopPlayer.money >= checkout.prize)
-        {
-            ConversationManager.Instance.SetBool("hasEnoughMoney", true);
-            BagObject bag = Instantiate(bagPrefab, transform.position, transform.rotation);
-
-
-            bag.keyIDs = checkout.boughtInteractableObjects.ConvertAll(obj => obj.keyID);
-
-
-            shopPlayer.ChangeMoney(-checkout.prize);
-
-        }
-
-        else
-        {
-            ConversationManager.Instance.SetBool("hasEnoughMoney", false);
-        }
-
-
-
+        ConversationManager.Instance.SetBool("hasEnoughMoney", shopPlayer.money >= checkout.prize);
     }
 
     public void ProceedCheckout()
     {
         BagObject bag = Instantiate(bagPrefab, bagSpawnPosition.position, transform.rotation);
-
-
         bag.keyIDs = checkout.boughtInteractableObjects.ConvertAll(obj => obj.keyID);
-
-
         shopPlayer.ChangeMoney(-checkout.prize);
-
         checkout.CheckOut();
-
         saidHello = false;
-
         conversation = secondMeetingConversation;
     }
 
